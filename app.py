@@ -22,9 +22,8 @@ except ImportError:
     import os
     class Config:
         MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY", "")
+        MISTRAL_API_KEY_BACKUP = os.getenv("MISTRAL_API_KEY_BACKUP", "")
         MISTRAL_MODEL = os.getenv("MISTRAL_MODEL", "mistral-small-latest")
-        HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY", "")
-        HUGGINGFACE_API_URL = os.getenv("HUGGINGFACE_API_URL", "https://router.huggingface.co/models/google/flan-t5-base")
     config = Config()
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
@@ -44,33 +43,58 @@ def add_no_cache_headers(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
     return response
 
-# Configuration des APIs avec valeurs par défaut
+# Configuration des APIs Mistral uniquement - Version améliorée
 try:
     MISTRAL_API_KEY = config.MISTRAL_API_KEY
+    MISTRAL_API_KEY_BACKUP = config.MISTRAL_API_KEY_BACKUP
     MISTRAL_MODEL = config.MISTRAL_MODEL
-    HUGGINGFACE_API_KEY = config.HUGGINGFACE_API_KEY
-    HUGGINGFACE_API_URL = config.HUGGINGFACE_API_URL
 except AttributeError:
     # Si config n'a pas les attributs, utiliser os.getenv directement
     MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY", "")
+    MISTRAL_API_KEY_BACKUP = os.getenv("MISTRAL_API_KEY_BACKUP", "")
     MISTRAL_MODEL = os.getenv("MISTRAL_MODEL", "mistral-small-latest")
-    HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY", "")
-    HUGGINGFACE_API_URL = os.getenv("HUGGINGFACE_API_URL", "https://router.huggingface.co/models/google/flan-t5-base")
 
-def call_mistral_api(prompt):
-    """Appelle l'API Mistral pour obtenir une réponse de l'IA"""
-    if not MISTRAL_API_KEY or MISTRAL_API_KEY.strip() == "":
-        return None  # Pas de clé API Mistral configurée
+# Vérification et affichage du statut de configuration (pour debug - seulement au démarrage)
+# Note: Sur Vercel, ces messages apparaîtront dans les logs de déploiement
+if MISTRAL_API_KEY and MISTRAL_API_KEY.strip():
+    key_preview = MISTRAL_API_KEY[:15] + "..." if len(MISTRAL_API_KEY) > 15 else "***"
+    print(f"✅ Configuration Mistral : Clé principale détectée (modèle: {MISTRAL_MODEL})")
+    print(f"   Clé principale (aperçu): {key_preview}")
+    
+    if MISTRAL_API_KEY_BACKUP and MISTRAL_API_KEY_BACKUP.strip():
+        backup_preview = MISTRAL_API_KEY_BACKUP[:15] + "..." if len(MISTRAL_API_KEY_BACKUP) > 15 else "***"
+        print(f"✅ Configuration Mistral : Clé de secours détectée")
+        print(f"   Clé de secours (aperçu): {backup_preview}")
+    else:
+        print("⚠️ Configuration Mistral : Clé de secours non configurée")
+else:
+    print("⚠️ Configuration Mistral : MISTRAL_API_KEY non configurée")
+    print("   → Sur Vercel : Allez dans Settings > Environment Variables et ajoutez MISTRAL_API_KEY")
+    print("   → Localement : Créez un fichier .env avec MISTRAL_API_KEY=votre_cle")
+
+def call_mistral_api(prompt, api_key=None):
+    """Appelle l'API Mistral pour obtenir une réponse de l'IA - Version améliorée avec gestion d'erreur et clé de secours"""
+    # Utiliser la clé fournie ou la clé principale par défaut
+    if not api_key:
+        api_key = MISTRAL_API_KEY
+    
+    # Vérifier que la clé API est configurée
+    if not api_key or api_key.strip() == "":
+        print("⚠️ Clé API Mistral non configurée ou vide")
+        return None
+    
+    # Vérifier que le modèle est configuré
+    model = MISTRAL_MODEL if MISTRAL_MODEL else "mistral-small-latest"
     
     try:
         url = "https://api.mistral.ai/v1/chat/completions"
         headers = {
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {MISTRAL_API_KEY}"
+            "Authorization": f"Bearer {api_key.strip()}"  # S'assurer qu'il n'y a pas d'espaces
         }
         
         payload = {
-            "model": MISTRAL_MODEL,
+            "model": model,
             "messages": [
                 {
                     "role": "user",
@@ -81,128 +105,92 @@ def call_mistral_api(prompt):
             "max_tokens": 1200  # Optimisé pour équilibrer qualité et vitesse
         }
         
-        response = requests.post(url, headers=headers, json=payload, timeout=60)
+        # Appel API avec timeout optimisé pour Vercel (8s pour compatibilité plan gratuit)
+        # Note: Vercel gratuit = 10s max, Pro = 60s max
+        response = requests.post(url, headers=headers, json=payload, timeout=8)
         
+        # Gestion des différents codes de réponse
         if response.status_code == 200:
             result = response.json()
             if result.get('choices') and len(result['choices']) > 0:
                 content = result['choices'][0].get('message', {}).get('content', '')
-                if content:
+                if content and content.strip():
+                    key_type = "principale" if api_key == MISTRAL_API_KEY else "secours"
+                    print(f"✅ API Mistral ({key_type}) : Réponse reçue ({len(content)} caractères)")
                     return content.strip()
+            print("⚠️ API Mistral : Réponse vide ou invalide")
+            return None
         
+        elif response.status_code == 401:
+            key_type = "principale" if api_key == MISTRAL_API_KEY else "secours"
+            print(f"❌ API Mistral ({key_type}) : Erreur 401 - Clé API invalide ou expirée")
+            return None
+        
+        elif response.status_code == 429:
+            key_type = "principale" if api_key == MISTRAL_API_KEY else "secours"
+            print(f"⚠️ API Mistral ({key_type}) : Erreur 429 - Limite de taux dépassée")
+            return None
+        
+        elif response.status_code == 400:
+            error_detail = response.text[:200] if response.text else ""
+            print(f"❌ API Mistral : Erreur 400 - Requête invalide: {error_detail}")
+            return None
+        
+        else:
+            error_detail = response.text[:200] if response.text else ""
+            print(f"❌ API Mistral : Erreur {response.status_code}: {error_detail}")
+            return None
+        
+    except requests.exceptions.Timeout:
+        key_type = "principale" if api_key == MISTRAL_API_KEY else "secours"
+        print(f"❌ API Mistral ({key_type}) : Timeout - L'API prend trop de temps à répondre")
         return None
-        
+    
+    except requests.exceptions.RequestException as e:
+        key_type = "principale" if api_key == MISTRAL_API_KEY else "secours"
+        print(f"❌ API Mistral ({key_type}) : Erreur de connexion: {str(e)}")
+        return None
+    
     except Exception as e:
-        return None  # Erreur, on essaiera Hugging Face
+        key_type = "principale" if api_key == MISTRAL_API_KEY else "secours"
+        print(f"❌ API Mistral ({key_type}) : Erreur inattendue: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return None
 
-def call_huggingface_api(prompt):
-    """Appelle l'API Hugging Face pour obtenir une réponse de l'IA"""
-    headers = {
-        "Authorization": f"Bearer {HUGGINGFACE_API_KEY}",
-        "Content-Type": "application/json"
-    }
-    
-    payload = {
-        "inputs": prompt,
-        "parameters": {
-            "max_new_tokens": 500,
-            "temperature": 0.7,
-            "return_full_text": False
-        }
-    }
-    
-    # Essayer plusieurs URLs si la première ne fonctionne pas
-    urls_to_try = [
-        HUGGINGFACE_API_URL,
-        HUGGINGFACE_API_URL.replace("router.huggingface.co", "api-inference.huggingface.co"),
-    ]
-    
-    for url in urls_to_try:
-        try:
-            response = requests.post(url, headers=headers, json=payload, timeout=20)  # Timeout optimisé pour rapidité
-            
-            if response.status_code == 200:
-                result = response.json()
-                
-                # Gérer différents formats de réponse
-                if isinstance(result, list) and len(result) > 0:
-                    generated_text = result[0].get('generated_text', '')
-                    if generated_text:
-                        return generated_text.strip()
-                
-                if isinstance(result, dict):
-                    generated_text = result.get('generated_text', '') or result.get('text', '')
-                    if generated_text:
-                        return generated_text.strip()
-                
-                # Si la réponse est une string directement
-                if isinstance(result, str):
-                    return result.strip()
-                
-                # Fallback: analyser le texte brut
-                text = str(result)
-                if text and text != '{}' and text != '[]':
-                    return text.strip()
-                
-                return "L'IA n'a pas pu générer de réponse. Veuillez réessayer."
-                
-            elif response.status_code == 503:
-                return "Le modèle est en cours de chargement. Veuillez patienter quelques secondes et réessayer."
-            elif response.status_code == 410:
-                # Si erreur 410, essayer l'autre URL
-                continue
-            else:
-                error_msg = f"Erreur API (code {response.status_code})"
-                try:
-                    error_detail = response.json()
-                    if isinstance(error_detail, dict):
-                        if 'error' in error_detail:
-                            error_msg += f": {error_detail['error']}"
-                        elif 'message' in error_detail:
-                            error_msg += f": {error_detail['message']}"
-                    elif isinstance(error_detail, str):
-                        error_msg += f": {error_detail}"
-                except:
-                    error_text = response.text[:200] if response.text else ""
-                    if error_text:
-                        error_msg += f": {error_text}"
-                # Si ce n'est pas la dernière URL, continuer
-                if url != urls_to_try[-1]:
-                    continue
-                return error_msg
-                
-        except requests.exceptions.Timeout:
-            if url == urls_to_try[-1]:  # Dernière URL
-                return "Délai d'attente dépassé. L'API Hugging Face prend trop de temps à répondre. Veuillez réessayer."
-            continue
-        except requests.exceptions.RequestException as e:
-            if url == urls_to_try[-1]:  # Dernière URL
-                return f"Erreur de connexion à l'API: {str(e)}"
-            continue
-        except Exception as e:
-            if url == urls_to_try[-1]:  # Dernière URL
-                return f"Erreur lors de l'appel à l'API: {str(e)}"
-            continue
-    
-    # Si toutes les URLs ont échoué
-    return """❌ Impossible de se connecter à l'API Hugging Face.
-
-💡 Solutions possibles:
-1. Vérifiez votre clé API sur https://huggingface.co/settings/tokens
-2. Le modèle peut ne pas être disponible via l'API gratuite
-3. Essayez un autre modèle dans config.py (ex: google/flan-t5-large)
-4. Consultez GUIDE_API.md pour plus d'aide"""
+# Fonction Hugging Face supprimée - Utilisation exclusive de Mistral
 
 def call_ai_api(prompt):
-    """Appelle l'API IA (Mistral en priorité, puis Hugging Face en fallback)"""
-    # Essayer Mistral d'abord
-    if MISTRAL_API_KEY:
-        result = call_mistral_api(prompt)
+    """Appelle l'API Mistral avec clé principale et clé de secours - Version améliorée"""
+    # Essayer la clé principale d'abord
+    if MISTRAL_API_KEY and MISTRAL_API_KEY.strip():
+        print(f"🔄 Tentative de connexion à l'API Mistral (clé principale, modèle: {MISTRAL_MODEL})...")
+        result = call_mistral_api(prompt, MISTRAL_API_KEY)
         if result:
+            print("✅ API Mistral (principale) : Succès - Réponse reçue")
             return result
+        else:
+            print("❌ API Mistral (principale) : Échec - Tentative avec clé de secours...")
     
-    # Fallback sur Hugging Face
-    return call_huggingface_api(prompt)
+    # Essayer la clé de secours si la principale a échoué
+    if MISTRAL_API_KEY_BACKUP and MISTRAL_API_KEY_BACKUP.strip():
+        print(f"🔄 Tentative de connexion à l'API Mistral (clé de secours, modèle: {MISTRAL_MODEL})...")
+        result = call_mistral_api(prompt, MISTRAL_API_KEY_BACKUP)
+        if result:
+            print("✅ API Mistral (secours) : Succès - Réponse reçue")
+            return result
+        else:
+            print("❌ API Mistral (secours) : Échec")
+    
+    # Aucune clé configurée ou toutes ont échoué
+    if not MISTRAL_API_KEY or not MISTRAL_API_KEY.strip():
+        print("❌ Aucune clé API Mistral configurée")
+        print("   → Sur Vercel : Allez dans Settings > Environment Variables")
+        print("   → Ajoutez MISTRAL_API_KEY et MISTRAL_API_KEY_BACKUP")
+    else:
+        print("❌ Toutes les clés API Mistral ont échoué")
+    
+    return None
 
 def transform_objective_to_smart(objective_text, objective_number=None, total_objectives=None):
     """Transforme un objectif simple en format SMART avec l'IA - Traitement individuel et spécifique"""
@@ -264,6 +252,15 @@ Sois très concret, précis, motivant et actionnable. Utilise des exemples chiff
             print(f"Tentative {attempt + 1} : réponse trop courte ou vide, nouvelle tentative...")
     
     if not result or not result.strip():
+        # Vérifier si Mistral est configuré pour afficher un message approprié
+        mistral_configured = MISTRAL_API_KEY and MISTRAL_API_KEY.strip()
+        
+        error_msg = "L'IA n'a pas pu traiter cet objectif automatiquement."
+        if not mistral_configured:
+            error_msg += " ⚠️ MISTRAL_API_KEY non configurée sur Vercel. Allez dans Settings > Environment Variables et ajoutez votre clé API Mistral pour activer l'analyse IA."
+        else:
+            error_msg += " Veuillez réessayer ou compléter manuellement les détails SMART."
+        
         # Si vraiment aucune réponse, on génère un objectif SMART basique mais structuré
         return {
             "goal": objective_text,
@@ -271,8 +268,8 @@ Sois très concret, précis, motivant et actionnable. Utilise des exemples chiff
             "measurable": f"Indicateurs de succès à déterminer pour : {objective_text}. Définir des métriques concrètes.",
             "achievable": f"Évaluer la faisabilité de : {objective_text}. Identifier les ressources nécessaires.",
             "relevant": f"Justifier l'importance de : {objective_text}. Aligner avec les valeurs personnelles.",
-            "time_bound": f"Définir un calendrier pour : {objective_text}. Fixer des dates précises et des jalons.",
-            "analysis": f"L'IA n'a pas pu traiter cet objectif automatiquement. Veuillez compléter manuellement les détails SMART pour : {objective_text}"
+            "time_bound": f"Définir un calendrier pour : {objective_text}. Fixer des dates précises en 2026 (jour/mois/2026) et des jalons intermédiaires.",
+            "analysis": error_msg
         }
     
     # Nettoyer la réponse : enlever markdown, backticks, etc.
@@ -433,10 +430,17 @@ Structure ta réponse de manière claire et inspirante :
 
 Sois inspirant, concret, motivant et actionnable. Utilise un ton positif et encourageant. RAPPEL : Nous sommes en 2026, toutes les actions et dates doivent être pour l'année 2026."""
     
-    # Appel direct à Mistral pour IKIGAI (plus rapide, pas besoin de fallback)
-    result = call_mistral_api(prompt) if MISTRAL_API_KEY else call_ai_api(prompt)
+    # Appel à l'API Mistral (avec clé principale et secours)
+    result = call_ai_api(prompt)
     
     if not result or len(result.strip()) < 50:
+        # Vérifier si Mistral est configuré pour afficher un message approprié
+        mistral_configured = MISTRAL_API_KEY and MISTRAL_API_KEY.strip()
+        
+        config_note = ""
+        if not mistral_configured:
+            config_note = "\n\n⚠️ **IMPORTANT** : MISTRAL_API_KEY non configurée sur Vercel. Allez dans Settings > Environment Variables et ajoutez votre clé API Mistral pour activer l'analyse IA."
+        
         # Générer une analyse basique structurée
         return f"""## 🌟 TON IKIGAI (Raison d'Être)
 
@@ -458,7 +462,7 @@ Ces quatre éléments se complètent et révèlent des opportunités intéressan
 1. Définir des objectifs SMART alignés avec ton IKIGAI pour 2026
 2. Chercher des opportunités en 2026 qui combinent tes 4 éléments
 3. Développer un plan d'action concret pour vivre ton IKIGAI en 2026
-4. Suivre régulièrement ta progression vers ton IKIGAI tout au long de 2026"""
+4. Suivre régulièrement ta progression vers ton IKIGAI tout au long de 2026{config_note}"""
     
     return result.strip()
 

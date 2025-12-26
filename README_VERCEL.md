@@ -12,12 +12,19 @@ Ce projet est configuré pour être déployé sur Vercel.
 
 ## Variables d'environnement à configurer sur Vercel
 
-Dans les paramètres de votre projet Vercel, ajoutez ces variables d'environnement :
+Dans les paramètres de votre projet Vercel (Settings > Environment Variables), ajoutez ces variables d'environnement :
 
-1. **MISTRAL_API_KEY** : Votre clé API Mistral
-2. **MISTRAL_MODEL** : Le modèle Mistral à utiliser (ex: `mistral-small-latest`)
-3. **HUGGINGFACE_API_KEY** : Votre clé API Hugging Face (optionnel, en fallback)
-4. **HUGGINGFACE_API_URL** : URL de l'API Hugging Face (optionnel)
+### 🔑 Obligatoires :
+1. **MISTRAL_API_KEY** : Votre clé API Mistral principale
+   - Exemple : `jqm2diYfGA7sGqedt6Jj4e0uVWnheEAC`
+
+### 🔑 Recommandées :
+2. **MISTRAL_API_KEY_BACKUP** : Votre clé API Mistral de secours (utilisée si la principale échoue)
+   - Exemple : `u7JENkl50uqSrsZm8UZ432zDiWdkwbPT`
+   - ⚠️ **Important** : Si la clé principale échoue, la clé de secours sera automatiquement utilisée
+
+3. **MISTRAL_MODEL** : Le modèle Mistral à utiliser (optionnel, par défaut : `mistral-small-latest`)
+   - Options : `mistral-small-latest`, `mistral-tiny-latest` (plus rapide)
 
 ## Déploiement
 
@@ -42,9 +49,12 @@ Dans les paramètres de votre projet Vercel, ajoutez ces variables d'environneme
 
 ## Notes
 
-- Le cache est désactivé sur toutes les réponses pour garantir des données à jour
-- Le traitement des objectifs est optimisé avec traitement parallèle (max 3 threads)
-- Les timeouts API sont optimisés à 20 secondes pour une meilleure rapidité
+- ✅ **API Mistral uniquement** : L'application utilise exclusivement l'API Mistral (plus de Hugging Face)
+- ✅ **Double clé API** : Système de fallback automatique entre clé principale et clé de secours
+- ✅ **Cache désactivé** : Le cache est désactivé sur toutes les réponses pour garantir des données à jour
+- ✅ **Traitement parallèle** : Les objectifs sont traités en parallèle (max 3 threads) pour plus de rapidité
+- ✅ **Timeout optimisé** : Timeout API à 8 secondes pour compatibilité avec Vercel gratuit (limite 10s)
+- ✅ **Logs détaillés** : Les logs Vercel affichent quelle clé API est utilisée et les erreurs éventuelles
 
 ## 🔧 Dépannage - Erreur 500 sur Vercel
 
@@ -55,10 +65,10 @@ Dans les paramètres de votre projet Vercel, ajoutez ces variables d'environneme
 1. **Vérifier les variables d'environnement sur Vercel** :
    - Allez dans votre projet Vercel > Settings > Environment Variables
    - Ajoutez toutes les variables nécessaires :
-     - `MISTRAL_API_KEY` (obligatoire)
+     - `MISTRAL_API_KEY` (obligatoire) - Votre clé API Mistral principale
+     - `MISTRAL_API_KEY_BACKUP` (recommandé) - Votre clé API Mistral de secours
      - `MISTRAL_MODEL` (optionnel, défaut: `mistral-small-latest`)
-     - `HUGGINGFACE_API_KEY` (optionnel)
-     - `HUGGINGFACE_API_URL` (optionnel)
+   - ⚠️ **Important** : Les deux clés API Mistral sont recommandées pour la redondance
 
 2. **Vérifier les logs de déploiement** :
    - Allez dans Deployments > Cliquez sur le dernier déploiement
