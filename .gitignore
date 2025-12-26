@@ -11,4 +11,6 @@ ENV/
 .DS_Store
 *.log
 .env
+# Ne pas ignorer config.py mais il ne contient plus de secrets
+# Les secrets sont maintenant dans .env (qui est ignoré)
 
