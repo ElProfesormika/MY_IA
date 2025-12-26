@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>BuildNovaG - Objectifs-AI | Définissez vos Objectifs SMART & IKIGAI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='logo_BuildNovaG.jpg') }}" alt="BuildNovaG Logo" class="logo-img">
+                <div class="logo-text">
+                    <h1 class="brand-name">BuildNovaG</h1>
+                    <p class="brand-tagline">Objectifs-AI</p>
+                    <p class="new-year">Heureuse Année 2026</p>
+                </div>
+            </div>
+            <h2>🎯 Transformez vos Rêves en Objectifs Concrets</h2>
+            <p class="subtitle">L'IA vous guide pas à pas pour définir vos objectifs SMART et découvrir votre IKIGAI</p>
+        </header>
+
+        <!-- Étape 1: Questions guidées pour les objectifs -->
+        <div id="step-objectives" class="step active">
+            <div class="form-section">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <div>
+                        <h2>📝 Quels sont vos objectifs pour cette année ?</h2>
+                        <p class="info-text">Dites-moi simplement ce que vous aimeriez accomplir. L'IA transformera vos idées en objectifs SMART structurés et actionnables.</p>
+                    </div>
+                </div>
+                
+                <div id="objectives-list">
+                    <div class="objective-item">
+                        <div class="form-group">
+                            <label>Objectif #1 *</label>
+                            <textarea class="objective-input" rows="3" placeholder="Ex: Je veux améliorer ma santé, apprendre une nouvelle langue, changer de carrière..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-secondary" onclick="addObjective()">+ Ajouter un autre objectif</button>
+                
+                <div class="form-group" style="margin-top: 30px;">
+                    <button type="button" class="btn btn-primary" onclick="processObjectives()">
+                        <span id="objectives-loading" class="loading hidden">⏳</span>
+                        Continuer avec l'IA →
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Étape 2: Questions guidées IKIGAI -->
+        <div id="step-ikigai" class="step">
+            <div class="form-section">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <div>
+                        <h2>🌸 Découvrons votre IKIGAI (Raison d'Être)</h2>
+                        <p class="info-text">Répondez à ces questions simples. L'IA analysera vos réponses pour révéler votre raison d'être et vos opportunités.</p>
+                    </div>
+                </div>
+                
+                <form id="ikigai-form">
+                    <div class="form-group">
+                        <label>Qu'est-ce que vous aimez vraiment faire dans la vie ? *</label>
+                        <textarea id="what_you_love" rows="4" placeholder="Parlez-moi de vos passions, de ce qui vous rend heureux, de ce que vous feriez même si vous n'étiez pas payé..."></textarea>
+                        <small>Décrivez librement ce qui vous passionne</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>En quoi êtes-vous doué ? Quelles sont vos compétences ? *</label>
+                        <textarea id="what_you_are_good_at" rows="4" placeholder="Quelles sont vos forces ? Vos talents naturels ? Ce que les autres vous demandent souvent ?"></textarea>
+                        <small>Parlez de vos compétences, talents, savoir-faire</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quels problèmes dans le monde vous touchent ? Comment voulez-vous aider ? *</label>
+                        <textarea id="what_world_needs" rows="4" placeholder="Qu'est-ce qui vous révolte ? Qu'est-ce que vous aimeriez changer dans le monde ?"></textarea>
+                        <small>Comment voulez-vous contribuer à rendre le monde meilleur ?</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Pour quoi pourriez-vous être payé ? Quelle valeur pouvez-vous créer ? *</label>
+                        <textarea id="what_you_can_be_paid_for" rows="4" placeholder="Quels services ou produits pourriez-vous offrir ? Quelle valeur pouvez-vous apporter ?"></textarea>
+                        <small>Comment pourriez-vous monétiser vos compétences et passions ?</small>
+                    </div>
+
+                    <button type="button" class="btn btn-primary" onclick="processIKIGAI()">
+                        <span id="ikigai-loading" class="loading hidden">⏳</span>
+                        Analyser mon IKIGAI avec l'IA →
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Étape 3: Résultats et révisions -->
+        <div id="step-results" class="step">
+            <div class="form-section">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <div>
+                        <h2>✨ Vos Objectifs SMART et votre IKIGAI</h2>
+                        <p class="info-text">L'IA a transformé vos réponses en objectifs SMART structurés et actionnables. Révisez vos objectifs et générez votre document professionnel.</p>
+                    </div>
+                </div>
+                
+                <div id="smart-results" class="scrollable-section"></div>
+                
+                <div id="ikigai-result" class="analysis-result scrollable-section" style="display: none;">
+                    <h3>🌸 Votre IKIGAI</h3>
+                    <div id="ikigai-content" class="analysis-content"></div>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <button type="button" id="generate-pdf-btn" class="btn btn-success" onclick="generatePDF()">
+                        <span id="pdf-loading" class="loading hidden">⏳</span>
+                        📄 Générer le PDF Final
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Visitez notre site et nos services : <a href="https://www.buildnovag.fr" target="_blank">www.buildnovag.fr</a></p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
