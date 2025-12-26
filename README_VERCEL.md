@@ -12,19 +12,38 @@ Ce projet est configuré pour être déployé sur Vercel.
 
 ## Variables d'environnement à configurer sur Vercel
 
-Dans les paramètres de votre projet Vercel (Settings > Environment Variables), ajoutez ces variables d'environnement :
+📖 **Guide détaillé** : Consultez [GUIDE_CONFIGURATION_VERCEL.md](./GUIDE_CONFIGURATION_VERCEL.md) pour un guide pas à pas avec captures d'écran.
 
-### 🔑 Obligatoires :
-1. **MISTRAL_API_KEY** : Votre clé API Mistral principale
-   - Exemple : `jqm2diYfGA7sGqedt6Jj4e0uVWnheEAC`
+### 🔑 Configuration Rapide :
 
-### 🔑 Recommandées :
-2. **MISTRAL_API_KEY_BACKUP** : Votre clé API Mistral de secours (utilisée si la principale échoue)
-   - Exemple : `u7JENkl50uqSrsZm8UZ432zDiWdkwbPT`
-   - ⚠️ **Important** : Si la clé principale échoue, la clé de secours sera automatiquement utilisée
+Dans les paramètres de votre projet Vercel (Settings > Environment Variables), ajoutez ces variables :
 
-3. **MISTRAL_MODEL** : Le modèle Mistral à utiliser (optionnel, par défaut : `mistral-small-latest`)
-   - Options : `mistral-small-latest`, `mistral-tiny-latest` (plus rapide)
+#### 1. Clé API Mistral Principale (Obligatoire)
+- **Nom** : `MISTRAL_API_KEY`
+- **Valeur** : `jqm2diYfGA7sGqedt6Jj4e0uVWnheEAC`
+- **Environnements** : ✅ Production, ✅ Preview, ✅ Development
+
+#### 2. Clé API Mistral de Secours (Recommandé)
+- **Nom** : `MISTRAL_API_KEY_BACKUP`
+- **Valeur** : `u7JENkl50uqSrsZm8UZ432zDiWdkwbPT`
+- **Environnements** : ✅ Production, ✅ Preview, ✅ Development
+- ⚠️ **Important** : Utilisée automatiquement si la clé principale échoue
+
+#### 3. Modèle Mistral (Optionnel)
+- **Nom** : `MISTRAL_MODEL`
+- **Valeur** : `mistral-small-latest`
+- **Environnements** : ✅ Production, ✅ Preview, ✅ Development
+- **Par défaut** : `mistral-small-latest` si non défini
+
+### 📝 Étapes Détaillées :
+
+1. Allez sur https://vercel.com et connectez-vous
+2. Sélectionnez votre projet
+3. Cliquez sur **Settings** → **Environment Variables**
+4. Cliquez sur **Add New** pour chaque variable
+5. Redéployez l'application (les variables ne sont chargées qu'au déploiement)
+
+👉 **Voir le guide complet** : [GUIDE_CONFIGURATION_VERCEL.md](./GUIDE_CONFIGURATION_VERCEL.md)
 
 ## Déploiement
 

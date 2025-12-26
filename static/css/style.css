@@ -512,6 +512,9 @@ footer a:hover {
     font-family: inherit;
     transition: all 0.3s ease;
     background: #f8f9fa;
+    -webkit-appearance: none; /* Supprime le style par défaut iOS */
+    appearance: none;
+    resize: vertical; /* Permet le redimensionnement vertical uniquement */
 }
 
 .form-group input:focus,
@@ -695,18 +698,402 @@ footer a:hover {
     font-size: 2em;
 }
 
+/* ============================================
+   RESPONSIVE DESIGN - MOBILE FIRST
+   ============================================ */
+
+/* Tablettes et petits écrans (max-width: 768px) */
 @media (max-width: 768px) {
-    header h1 {
+    body {
+        padding: 10px;
+    }
+    
+    .container {
+        border-radius: 15px;
+        margin: 0 auto;
+    }
+    
+    header {
+        padding: 25px 20px;
+    }
+    
+    .logo-container {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .logo-img {
+        max-height: 60px;
+        max-width: 150px;
+    }
+    
+    .logo-text {
+        text-align: center;
+    }
+    
+    .brand-name {
+        font-size: 2em;
+    }
+    
+    .brand-tagline {
+        font-size: 1.2em;
+    }
+    
+    .new-year {
+        font-size: 1.1em;
+        padding: 6px 15px;
+    }
+    
+    header h2 {
+        font-size: 1.4em;
+        margin: 15px 0 8px 0;
+    }
+    
+    .subtitle {
+        font-size: 0.95em;
+        padding: 0 10px;
+    }
+    
+    .step {
+        padding: 25px 20px;
+    }
+    
+    .step-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .step-number {
+        width: 45px;
+        height: 45px;
+        font-size: 1.6em;
+    }
+    
+    .form-section h2 {
+        font-size: 1.5em;
+        text-align: center;
+    }
+    
+    .info-text {
+        font-size: 0.95em;
+        text-align: center;
+        padding: 0 5px;
+    }
+    
+    .objective-item {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        font-size: 1em;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        padding: 10px 12px;
+        font-size: 0.95em;
+    }
+    
+    .btn {
+        padding: 12px 20px;
+        font-size: 1em;
+        width: 100%;
+    }
+    
+    .btn-secondary {
+        margin-bottom: 15px;
+    }
+    
+    .smart-objective-card {
+        padding: 15px;
+        margin-bottom: 20px;
+        max-height: 500px;
+    }
+    
+    .smart-objective-card h3 {
+        font-size: 1.1em;
+    }
+    
+    .objective-title {
+        font-size: 1.2em;
+    }
+    
+    .smart-item {
+        padding: 10px;
+        margin-bottom: 12px;
+    }
+    
+    .smart-item strong {
+        font-size: 1em;
+    }
+    
+    .smart-item p {
+        font-size: 0.9em;
+    }
+    
+    .smart-analysis {
+        padding: 10px;
+        margin-top: 10px;
+    }
+    
+    .ikigai-details {
+        padding: 10px;
+        max-height: 350px;
+    }
+    
+    .ikigai-item strong {
+        font-size: 1em;
+    }
+    
+    .ikigai-item p {
+        font-size: 0.9em;
+    }
+    
+    .ikigai-analysis {
+        padding: 12px;
+        max-height: 400px;
+    }
+    
+    .ikigai-analysis h4 {
+        font-size: 1.05em;
+    }
+    
+    .ikigai-analysis p {
+        font-size: 0.9em;
+    }
+    
+    #smart-results,
+    #ikigai-result {
+        max-height: 60vh;
+        padding-right: 5px;
+    }
+    
+    .pdf-section {
+        padding: 25px 20px;
+    }
+    
+    .pdf-section h2 {
+        font-size: 1.5em;
+    }
+    
+    footer {
+        padding: 20px 15px;
+    }
+    
+    footer p {
+        font-size: 0.95em;
+    }
+}
+
+/* Petits mobiles (max-width: 480px) */
+@media (max-width: 480px) {
+    body {
+        padding: 5px;
+    }
+    
+    .container {
+        border-radius: 10px;
+    }
+    
+    header {
+        padding: 20px 15px;
+    }
+    
+    .logo-img {
+        max-height: 50px;
+        max-width: 120px;
+    }
+    
+    .brand-name {
+        font-size: 1.6em;
+    }
+    
+    .brand-tagline {
+        font-size: 1em;
+    }
+    
+    .new-year {
+        font-size: 0.95em;
+        padding: 5px 12px;
+    }
+    
+    header h2 {
+        font-size: 1.2em;
+        margin: 12px 0 6px 0;
+    }
+    
+    .subtitle {
+        font-size: 0.85em;
+    }
+    
+    .step {
+        padding: 20px 15px;
+    }
+    
+    .step-number {
+        width: 40px;
+        height: 40px;
+        font-size: 1.4em;
+    }
+    
+    .form-section h2 {
+        font-size: 1.3em;
+    }
+    
+    .info-text {
+        font-size: 0.9em;
+    }
+    
+    .objective-item {
+        padding: 12px;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        padding: 8px 10px;
+        font-size: 0.9em;
+    }
+    
+    .btn {
+        padding: 10px 15px;
+        font-size: 0.95em;
+    }
+    
+    .smart-objective-card {
+        padding: 12px;
+        max-height: 450px;
+    }
+    
+    .objective-title {
+        font-size: 1.1em;
+    }
+    
+    .smart-item {
+        padding: 8px;
+    }
+    
+    .smart-letter {
+        width: 24px;
+        height: 24px;
+        font-size: 0.8em;
+    }
+    
+    .smart-item strong {
+        font-size: 0.95em;
+    }
+    
+    .smart-item p {
+        font-size: 0.85em;
+    }
+    
+    .ikigai-details {
+        padding: 8px;
+        max-height: 300px;
+    }
+    
+    .ikigai-analysis {
+        padding: 10px;
+        max-height: 350px;
+    }
+    
+    #smart-results,
+    #ikigai-result {
+        max-height: 50vh;
+    }
+    
+    .pdf-section {
+        padding: 20px 15px;
+    }
+    
+    footer {
+        padding: 15px 10px;
+    }
+    
+    footer p {
+        font-size: 0.9em;
+    }
+}
+
+/* Très petits écrans (max-width: 360px) */
+@media (max-width: 360px) {
+    .brand-name {
+        font-size: 1.4em;
+    }
+    
+    .brand-tagline {
+        font-size: 0.9em;
+    }
+    
+    header h2 {
+        font-size: 1.1em;
+    }
+    
+    .form-section h2 {
+        font-size: 1.2em;
+    }
+    
+    .step-number {
+        width: 35px;
+        height: 35px;
+        font-size: 1.2em;
+    }
+}
+
+/* Orientation paysage sur mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    header {
+        padding: 20px 15px;
+    }
+    
+    .logo-container {
+        flex-direction: row;
+        gap: 15px;
+    }
+    
+    .brand-name {
         font-size: 1.8em;
     }
     
-    .tab-content {
-        padding: 20px;
+    #smart-results,
+    #ikigai-result {
+        max-height: 50vh;
+    }
+}
+
+/* Amélioration du tactile pour mobile */
+@media (hover: none) and (pointer: coarse) {
+    .btn {
+        min-height: 44px; /* Taille minimale recommandée pour le tactile */
     }
     
-    .form-section h2,
-    .pdf-section h2 {
-        font-size: 1.5em;
+    .form-group input,
+    .form-group textarea {
+        min-height: 44px;
+        font-size: 16px; /* Évite le zoom automatique sur iOS */
+    }
+    
+    .smart-item,
+    .ikigai-item {
+        padding: 12px;
+    }
+}
+
+/* Amélioration de l'affichage sur très grands écrans */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1000px;
+    }
+    
+    .step {
+        padding: 50px;
     }
 }
 
