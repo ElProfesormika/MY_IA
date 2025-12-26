@@ -46,3 +46,41 @@ Dans les paramètres de votre projet Vercel, ajoutez ces variables d'environneme
 - Le traitement des objectifs est optimisé avec traitement parallèle (max 3 threads)
 - Les timeouts API sont optimisés à 20 secondes pour une meilleure rapidité
 
+## 🔧 Dépannage - Erreur 500 sur Vercel
+
+### Problème : "This Serverless Function has crashed" / 500: INTERNAL_SERVER_ERROR
+
+**Solutions :**
+
+1. **Vérifier les variables d'environnement sur Vercel** :
+   - Allez dans votre projet Vercel > Settings > Environment Variables
+   - Ajoutez toutes les variables nécessaires :
+     - `MISTRAL_API_KEY` (obligatoire)
+     - `MISTRAL_MODEL` (optionnel, défaut: `mistral-small-latest`)
+     - `HUGGINGFACE_API_KEY` (optionnel)
+     - `HUGGINGFACE_API_URL` (optionnel)
+
+2. **Vérifier les logs de déploiement** :
+   - Allez dans Deployments > Cliquez sur le dernier déploiement
+   - Regardez les "Function Logs" pour voir l'erreur exacte
+   - Les erreurs courantes sont :
+     - `ModuleNotFoundError` : Vérifiez `requirements.txt`
+     - `ImportError` : Vérifiez les chemins d'import
+     - `AttributeError` : Vérifiez que les variables d'environnement sont définies
+
+3. **Tester localement avec Vercel CLI** :
+   ```bash
+   npm i -g vercel
+   vercel dev
+   ```
+
+4. **Vérifier la structure des fichiers** :
+   - `api/index.py` doit exister et importer `app`
+   - `app.py` doit être à la racine
+   - `templates/` et `static/` doivent exister
+
+5. **Redéployer après corrections** :
+   ```bash
+   git push  # Déclenchera un nouveau déploiement automatique
+   ```
+

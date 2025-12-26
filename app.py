@@ -12,11 +12,27 @@ from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER, TA_LEFT
 from datetime import datetime
 import io
-import config
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-app = Flask(__name__)
+# Importer config avec gestion d'erreur
+try:
+    import config
+except ImportError:
+    # Si config n'est pas trouvé, créer des valeurs par défaut
+    import os
+    class Config:
+        MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY", "")
+        MISTRAL_MODEL = os.getenv("MISTRAL_MODEL", "mistral-small-latest")
+        HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY", "")
+        HUGGINGFACE_API_URL = os.getenv("HUGGINGFACE_API_URL", "https://router.huggingface.co/models/google/flan-t5-base")
+    config = Config()
+
+app = Flask(__name__, static_folder='static', template_folder='templates')
 CORS(app)
+
+# Configuration pour Vercel
+app.config['DEBUG'] = False
+app.config['TESTING'] = False
 
 # Désactiver le cache pour toutes les réponses
 @app.after_request
@@ -28,11 +44,18 @@ def add_no_cache_headers(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
     return response
 
-# Configuration des APIs
-MISTRAL_API_KEY = config.MISTRAL_API_KEY
-MISTRAL_MODEL = config.MISTRAL_MODEL
-HUGGINGFACE_API_KEY = config.HUGGINGFACE_API_KEY
-HUGGINGFACE_API_URL = config.HUGGINGFACE_API_URL
+# Configuration des APIs avec valeurs par défaut
+try:
+    MISTRAL_API_KEY = config.MISTRAL_API_KEY
+    MISTRAL_MODEL = config.MISTRAL_MODEL
+    HUGGINGFACE_API_KEY = config.HUGGINGFACE_API_KEY
+    HUGGINGFACE_API_URL = config.HUGGINGFACE_API_URL
+except AttributeError:
+    # Si config n'a pas les attributs, utiliser os.getenv directement
+    MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY", "")
+    MISTRAL_MODEL = os.getenv("MISTRAL_MODEL", "mistral-small-latest")
+    HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY", "")
+    HUGGINGFACE_API_URL = os.getenv("HUGGINGFACE_API_URL", "https://router.huggingface.co/models/google/flan-t5-base")
 
 def call_mistral_api(prompt):
     """Appelle l'API Mistral pour obtenir une réponse de l'IA"""
@@ -213,16 +236,18 @@ CRITIQUE : Réponds UNIQUEMENT avec un JSON valide. Pas de texte avant, pas de t
     "measurable": "Indicateurs de succès concrets avec chiffres, pourcentages, quantités. Comment saura-t-on que CET objectif est réussi ? Métriques précises avec valeurs numériques. Minimum 20 mots.",
     "achievable": "Pourquoi CET objectif est réaliste et atteignable ? Quelles ressources, compétences, soutiens sont disponibles pour CET objectif spécifique ? Détaille les moyens concrets. Minimum 20 mots.",
     "relevant": "Pourquoi CET objectif est important et aligné avec les valeurs et aspirations ? Quel impact spécifique aura-t-il sur la vie de cette personne ? Minimum 20 mots.",
-    "time_bound": "Date limite précise et échéances intermédiaires pour CET objectif. Quand exactement sera-t-il atteint ? Jalons clairs avec dates spécifiques (jour/mois/année). Minimum 20 mots.",
+    "time_bound": "Date limite précise et échéances intermédiaires pour CET objectif en 2026. Quand exactement sera-t-il atteint en 2026 ? Jalons clairs avec dates spécifiques (jour/mois/2026). Minimum 20 mots. IMPORTANT : Toutes les dates doivent être en 2026.",
     "analysis": "Analyse motivante en 5-7 phrases SPÉCIFIQUE à cet objectif : points forts de CET objectif, conseils pratiques personnalisés pour le réussir, étapes clés à suivre, risques à éviter, ressources à mobiliser. Minimum 50 mots."
 }}
 
 EXEMPLES DE BONNES RÉPONSES :
 - "specific": "Je vais améliorer ma santé en faisant 30 minutes de sport 3 fois par semaine (lundi, mercredi, vendredi) le matin avant le travail, en suivant un programme d'entraînement personnalisé avec un coach."
 - "measurable": "Je mesurerai mon succès par : perte de 5 kg en 3 mois, capacité à courir 5 km sans s'arrêter, réduction de 10 points de tension artérielle, et amélioration de mon niveau d'énergie de 30%."
-- "time_bound": "Objectif final : 31 décembre 2026. Jalons : - 1er mars : perte de 2 kg - 1er juin : perte de 4 kg - 1er septembre : perte de 5 kg - 31 décembre : maintien du poids et forme optimale."
+- "time_bound": "Objectif final : 31 décembre 2026. Jalons 2026 : - 1er mars 2026 : perte de 2 kg - 1er juin 2026 : perte de 4 kg - 1er septembre 2026 : perte de 5 kg - 31 décembre 2026 : maintien du poids et forme optimale."
 
-Sois très concret, précis, motivant et actionnable. Utilise des exemples chiffrés et des dates précises. Adapte ton analyse à la nature spécifique de CET objectif. Réponds UNIQUEMENT le JSON, rien d'autre."""
+IMPORTANT : Nous sommes en 2026. Toutes les dates doivent être en 2026. L'année de référence est 2026.
+
+Sois très concret, précis, motivant et actionnable. Utilise des exemples chiffrés et des dates précises EN 2026. Adapte ton analyse à la nature spécifique de CET objectif. RAPPEL : Nous sommes en 2026, toutes les dates doivent être en 2026. Réponds UNIQUEMENT le JSON, rien d'autre."""
     
     # Essayer jusqu'à 2 fois pour obtenir une réponse complète
     max_attempts = 2
@@ -361,7 +386,7 @@ Sois très concret, précis, motivant et actionnable. Utilise des exemples chiff
             "measurable": measurable_extracted if measurable_extracted and len(measurable_extracted.strip()) >= 10 else f"Métriques à définir pour mesurer le succès de : {objective_text}. Déterminer des indicateurs quantifiables (chiffres, pourcentages, quantités).",
             "achievable": achievable_extracted if achievable_extracted and len(achievable_extracted.strip()) >= 10 else f"Évaluer la faisabilité de : {objective_text}. Identifier les ressources, compétences et soutiens nécessaires pour atteindre cet objectif.",
             "relevant": relevant_extracted if relevant_extracted and len(relevant_extracted.strip()) >= 10 else f"Justifier l'importance de : {objective_text}. Aligner avec les valeurs, aspirations et objectifs de vie personnels.",
-            "time_bound": time_bound_extracted if time_bound_extracted and len(time_bound_extracted.strip()) >= 10 else f"Calendrier à définir pour : {objective_text}. Fixer des dates précises (jour/mois/année) et des jalons intermédiaires.",
+            "time_bound": time_bound_extracted if time_bound_extracted and len(time_bound_extracted.strip()) >= 10 else f"Calendrier à définir pour : {objective_text}. Fixer des dates précises en 2026 (jour/mois/2026) et des jalons intermédiaires pour 2026.",
             "analysis": analysis_extracted if analysis_extracted and len(analysis_extracted.strip()) >= 20 else f"Analyse de l'objectif : {objective_text}. Points à considérer : définir les étapes clés, identifier les ressources nécessaires, anticiper les défis potentiels, et planifier les actions concrètes."
         }
     
@@ -372,7 +397,7 @@ Sois très concret, précis, motivant et actionnable. Utilise des exemples chiff
         "measurable": f"Métriques à définir pour mesurer le succès de : {objective_text}. Déterminer des indicateurs quantifiables avec des chiffres, pourcentages ou quantités précises.",
         "achievable": f"Évaluer la faisabilité de : {objective_text}. Identifier les ressources, compétences, soutiens et moyens disponibles pour atteindre cet objectif de manière réaliste.",
         "relevant": f"Justifier l'importance de : {objective_text}. Aligner avec les valeurs personnelles, aspirations et objectifs de vie. Définir l'impact positif attendu.",
-        "time_bound": f"Calendrier à définir pour : {objective_text}. Fixer des dates précises (jour/mois/année) pour l'objectif final et des jalons intermédiaires pour suivre la progression.",
+        "time_bound": f"Calendrier à définir pour : {objective_text}. Fixer des dates précises en 2026 (jour/mois/2026) pour l'objectif final et des jalons intermédiaires pour suivre la progression tout au long de 2026.",
         "analysis": f"Analyse de l'objectif : {objective_text}. Pour réussir cet objectif, il est important de : 1) Définir des étapes clés concrètes, 2) Identifier les ressources nécessaires, 3) Anticiper les défis potentiels, 4) Planifier les actions concrètes, 5) Suivre régulièrement la progression."
     }
 
@@ -402,11 +427,11 @@ Structure ta réponse de manière claire et inspirante :
 
 [3-5 recommandations actionnables pour vivre son IKIGAI au quotidien]
 
-## 🚀 PISTES D'ACTION POUR L'ANNÉE
+## 🚀 PISTES D'ACTION POUR 2026
 
-[3-5 actions concrètes à entreprendre cette année pour aligner sa vie avec son IKIGAI]
+[3-5 actions concrètes à entreprendre en 2026 pour aligner sa vie avec son IKIGAI]
 
-Sois inspirant, concret, motivant et actionnable. Utilise un ton positif et encourageant."""
+Sois inspirant, concret, motivant et actionnable. Utilise un ton positif et encourageant. RAPPEL : Nous sommes en 2026, toutes les actions et dates doivent être pour l'année 2026."""
     
     # Appel direct à Mistral pour IKIGAI (plus rapide, pas besoin de fallback)
     result = call_mistral_api(prompt) if MISTRAL_API_KEY else call_ai_api(prompt)
@@ -428,12 +453,12 @@ Ces quatre éléments se complètent et révèlent des opportunités intéressan
 3. Développe des compétences complémentaires pour renforcer ton IKIGAI
 4. Crée des opportunités qui allient passion et rémunération
 
-## 🚀 PISTES D'ACTION POUR L'ANNÉE
+## 🚀 PISTES D'ACTION POUR 2026
 
-1. Définir des objectifs SMART alignés avec ton IKIGAI
-2. Chercher des opportunités qui combinent tes 4 éléments
-3. Développer un plan d'action concret pour vivre ton IKIGAI
-4. Suivre régulièrement ta progression vers ton IKIGAI"""
+1. Définir des objectifs SMART alignés avec ton IKIGAI pour 2026
+2. Chercher des opportunités en 2026 qui combinent tes 4 éléments
+3. Développer un plan d'action concret pour vivre ton IKIGAI en 2026
+4. Suivre régulièrement ta progression vers ton IKIGAI tout au long de 2026"""
     
     return result.strip()
 
@@ -582,7 +607,7 @@ def create_pdf(objectives_list, ikigai_data, filename='objectifs_annee.pdf'):
     story.append(Spacer(1, 0.2*inch))
     
     # Titre principal
-    story.append(Paragraph("Mes Objectifs pour l'Année", title_style))
+    story.append(Paragraph("Mes Objectifs pour l'Année 2026", title_style))
     story.append(Spacer(1, 0.15*inch))
     story.append(Paragraph(f"<i>Document généré le {datetime.now().strftime('%d/%m/%Y à %H:%M')}</i>", 
                           ParagraphStyle('DateStyle', parent=styles['Normal'], alignment=TA_CENTER, textColor=colors.HexColor('#666'), fontSize=10)))
@@ -906,7 +931,7 @@ def process_objectives():
                 "measurable": f"Métriques à définir pour mesurer le succès de : {obj_text}. Déterminer des indicateurs quantifiables avec des chiffres, pourcentages ou quantités précises.",
                 "achievable": f"Évaluer la faisabilité de : {obj_text}. Identifier les ressources, compétences, soutiens et moyens disponibles pour atteindre cet objectif de manière réaliste.",
                 "relevant": f"Justifier l'importance de : {obj_text}. Aligner avec les valeurs personnelles, aspirations et objectifs de vie. Définir l'impact positif attendu.",
-                "time_bound": f"Calendrier à définir pour : {obj_text}. Fixer des dates précises (jour/mois/année) pour l'objectif final et des jalons intermédiaires pour suivre la progression.",
+                "time_bound": f"Calendrier à définir pour : {obj_text}. Fixer des dates précises en 2026 (jour/mois/2026) pour l'objectif final et des jalons intermédiaires pour suivre la progression tout au long de 2026.",
                 "analysis": f"Analyse de l'objectif : {obj_text}. Pour réussir cet objectif, il est important de : 1) Définir des étapes clés concrètes, 2) Identifier les ressources nécessaires, 3) Anticiper les défis potentiels, 4) Planifier les actions concrètes, 5) Suivre régulièrement la progression. Note : L'IA n'a pas pu traiter cet objectif automatiquement, veuillez compléter les détails manuellement."
             })
     

@@ -9,10 +9,17 @@ Créez un fichier .env avec vos clés API (voir .env.example)
 """
 
 import os
-from dotenv import load_dotenv
 
-# Charger les variables d'environnement depuis .env
-load_dotenv()
+# Charger les variables d'environnement depuis .env (si le fichier existe)
+# Sur Vercel, les variables d'environnement sont configurées directement
+try:
+    from dotenv import load_dotenv
+    # Ne pas faire planter l'app si .env n'existe pas (normal sur Vercel)
+    load_dotenv()
+except (ImportError, Exception):
+    # Si dotenv n'est pas disponible ou si .env n'existe pas, continuer quand même
+    # Les variables d'environnement seront lues depuis os.getenv() directement
+    pass
 
 # ============================================
 # 🔑 API MISTRAL (RECOMMANDÉ - GRATUITE)
