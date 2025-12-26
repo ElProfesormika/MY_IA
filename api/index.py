@@ -8,20 +8,25 @@ import os
 # Ajouter le répertoire parent au path pour importer app
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
-sys.path.insert(0, parent_dir)
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
 
+# Changer le répertoire de travail vers le parent pour que les chemins relatifs fonctionnent
+os.chdir(parent_dir)
+
+# Importer l'application Flask
 try:
     from app import app
-    # Vercel s'attend à un objet 'handler' ou 'app'
-    handler = app
 except Exception as e:
     # En cas d'erreur, créer une app Flask minimale pour le debug
     from flask import Flask
-    error_app = Flask(__name__)
+    app = Flask(__name__)
     
-    @error_app.route('/')
-    def error_handler():
-        return f"Erreur lors du chargement de l'application: {str(e)}", 500
-    
-    handler = error_app
+    @app.route('/')
+    def error():
+        import traceback
+        error_msg = f"Erreur lors du chargement: {str(e)}\n\n{traceback.format_exc()}"
+        return error_msg, 500
 
+# Vercel détecte automatiquement l'objet Flask nommé 'app'
+# Pas besoin de 'handler', Flask est détecté automatiquement
