@@ -78,15 +78,16 @@ async function processObjectives() {
         return;
     }
     
-    const loading = document.getElementById('objectives-loading');
     const btn = event.target;
-    const originalText = btn.innerHTML;
+    const spinner = btn.querySelector('.btn-spinner');
+    const btnText = btn.querySelector('.btn-text');
+    const originalText = btnText ? btnText.textContent : btn.textContent;
     
-    // Afficher l'indicateur de chargement
-    loading.classList.remove('hidden');
+    // Afficher l'indicateur de chargement dans le bouton
+    if (spinner) spinner.classList.remove('hidden');
+    if (btnText) btnText.textContent = 'Traitement en cours...';
     btn.disabled = true;
     btn.classList.add('processing');
-    btn.innerHTML = '<span class="loading-spinner"></span> <span class="loading-text">Traitement en cours...</span>';
     
     // Afficher l'overlay de chargement
     showLoadingOverlay('Traitement de vos objectifs par l\'IA', `Analyse de ${objectives.length} objectif(s) en cours...`);
@@ -120,10 +121,12 @@ async function processObjectives() {
         alert('Erreur lors du traitement des objectifs: ' + error.message);
     } finally {
         hideLoadingOverlay();
-        loading.classList.add('hidden');
+        const spinner = btn.querySelector('.btn-spinner');
+        const btnText = btn.querySelector('.btn-text');
+        if (spinner) spinner.classList.add('hidden');
+        if (btnText) btnText.textContent = originalText;
         btn.disabled = false;
         btn.classList.remove('processing');
-        btn.innerHTML = originalText;
     }
 }
 
@@ -232,15 +235,16 @@ async function processIKIGAI() {
         what_you_can_be_paid_for: what_you_can_be_paid_for
     };
     
-    const loading = document.getElementById('ikigai-loading');
     const btn = event.target;
-    const originalText = btn.innerHTML;
+    const spinner = btn.querySelector('.btn-spinner');
+    const btnText = btn.querySelector('.btn-text');
+    const originalText = btnText ? btnText.textContent : btn.textContent;
     
-    // Afficher l'indicateur de chargement
-    loading.classList.remove('hidden');
+    // Afficher l'indicateur de chargement dans le bouton
+    if (spinner) spinner.classList.remove('hidden');
+    if (btnText) btnText.textContent = 'Analyse en cours...';
     btn.disabled = true;
     btn.classList.add('processing');
-    btn.innerHTML = '<span class="loading-spinner"></span> <span class="loading-text">Analyse en cours...</span>';
     
     // Afficher l'overlay de chargement
     showLoadingOverlay('Analyse de votre IKIGAI', 'L\'IA révèle votre raison d\'être...');
@@ -274,10 +278,12 @@ async function processIKIGAI() {
         alert('Erreur lors de l\'analyse IKIGAI: ' + error.message);
     } finally {
         hideLoadingOverlay();
-        loading.classList.add('hidden');
+        const spinner = btn.querySelector('.btn-spinner');
+        const btnText = btn.querySelector('.btn-text');
+        if (spinner) spinner.classList.add('hidden');
+        if (btnText) btnText.textContent = originalText;
         btn.disabled = false;
         btn.classList.remove('processing');
-        btn.innerHTML = originalText;
     }
 }
 
@@ -334,20 +340,22 @@ async function generatePDF() {
     }
     
     const pdfBtn = document.getElementById('generate-pdf-btn');
-    const loading = document.getElementById('pdf-loading');
     
-    if (!pdfBtn || !loading) {
-        console.error('Éléments du bouton PDF non trouvés');
-        alert('Erreur: éléments du formulaire non trouvés');
+    if (!pdfBtn) {
+        console.error('Bouton PDF non trouvé');
+        alert('Erreur: bouton non trouvé');
         return;
     }
     
+    const spinner = pdfBtn.querySelector('.btn-spinner');
+    const btnText = pdfBtn.querySelector('.btn-text');
+    const originalText = btnText ? btnText.textContent : pdfBtn.textContent;
+    
     // Désactiver le bouton et afficher le loading
-    loading.classList.remove('hidden');
+    if (spinner) spinner.classList.remove('hidden');
+    if (btnText) btnText.textContent = 'Génération en cours...';
     pdfBtn.disabled = true;
     pdfBtn.classList.add('processing');
-    const originalContent = pdfBtn.innerHTML;
-    pdfBtn.innerHTML = '<span class="loading-spinner"></span> <span class="loading-text">Génération du PDF en cours...</span>';
     
     // Afficher l'overlay de chargement
     showLoadingOverlay('Génération de votre PDF', 'Création du document professionnel...');
@@ -424,9 +432,11 @@ async function generatePDF() {
         hideLoadingOverlay();
     } finally {
         // Réactiver le bouton
-        loading.classList.add('hidden');
+        const spinner = pdfBtn.querySelector('.btn-spinner');
+        const btnText = pdfBtn.querySelector('.btn-text');
+        if (spinner) spinner.classList.add('hidden');
+        if (btnText) btnText.textContent = originalText;
         pdfBtn.disabled = false;
         pdfBtn.classList.remove('processing');
-        pdfBtn.innerHTML = originalContent;
     }
 }

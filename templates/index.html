@@ -47,9 +47,9 @@
                 <button type="button" class="btn btn-secondary" onclick="addObjective()">+ Ajouter un autre objectif</button>
                 
                 <div class="form-group" style="margin-top: 30px;">
-                    <button type="button" class="btn btn-primary" onclick="processObjectives()">
-                        <span id="objectives-loading" class="loading hidden"></span>
-                        Continuer avec l'IA
+                    <button type="button" id="btn-objectives" class="btn btn-primary" onclick="processObjectives()">
+                        <span class="btn-spinner hidden"></span>
+                        <span class="btn-text">Continuer avec l'IA</span>
                     </button>
                 </div>
             </div>
@@ -91,9 +91,9 @@
                         <small>Comment pourriez-vous monétiser vos compétences et passions ?</small>
                     </div>
 
-                    <button type="button" class="btn btn-primary" onclick="processIKIGAI()">
-                        <span id="ikigai-loading" class="loading hidden"></span>
-                        Analyser mon IKIGAI avec l'IA
+                    <button type="button" id="btn-ikigai" class="btn btn-primary" onclick="processIKIGAI()">
+                        <span class="btn-spinner hidden"></span>
+                        <span class="btn-text">Analyser mon IKIGAI avec l'IA</span>
                     </button>
                 </form>
             </div>
@@ -119,8 +119,8 @@
 
                 <div style="margin-top: 30px;">
                     <button type="button" id="generate-pdf-btn" class="btn btn-success" onclick="generatePDF()">
-                        <span id="pdf-loading" class="loading hidden"></span>
-                        Générer le PDF Final
+                        <span class="btn-spinner hidden"></span>
+                        <span class="btn-text">Générer le PDF Final</span>
                     </button>
                 </div>
             </div>

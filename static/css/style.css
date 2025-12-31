@@ -993,6 +993,33 @@ footer a:hover::after {
     vertical-align: middle;
 }
 
+/* Spinner dans les boutons */
+.btn-spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2.5px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin-right: 10px;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+.btn-spinner.hidden {
+    display: none;
+}
+
+.btn {
+    position: relative;
+}
+
+.btn-text {
+    display: inline-block;
+    vertical-align: middle;
+}
+
 .loading-text {
     display: inline-block;
     vertical-align: middle;
