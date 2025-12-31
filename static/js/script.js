@@ -26,6 +26,43 @@ function addObjective() {
     list.appendChild(newObjective);
 }
 
+// Créer un overlay de chargement
+function showLoadingOverlay(message, submessage = '') {
+    let overlay = document.getElementById('loading-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'loading-overlay';
+        overlay.className = 'loading-overlay';
+        overlay.innerHTML = `
+            <div class="loading-overlay-content">
+                <div class="loading-overlay-spinner"></div>
+                <div class="loading-overlay-text">${message}</div>
+                ${submessage ? `<div class="loading-overlay-subtext">${submessage}</div>` : ''}
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    } else {
+        overlay.querySelector('.loading-overlay-text').textContent = message;
+        const subtextEl = overlay.querySelector('.loading-overlay-subtext');
+        if (subtextEl) {
+            subtextEl.textContent = submessage;
+        }
+    }
+    setTimeout(() => overlay.classList.add('active'), 10);
+}
+
+function hideLoadingOverlay() {
+    const overlay = document.getElementById('loading-overlay');
+    if (overlay) {
+        overlay.classList.remove('active');
+        setTimeout(() => {
+            if (overlay && overlay.parentNode) {
+                overlay.parentNode.removeChild(overlay);
+            }
+        }, 300);
+    }
+}
+
 // Traiter les objectifs avec l'IA
 async function processObjectives() {
     const objectives = [];
@@ -43,8 +80,16 @@ async function processObjectives() {
     
     const loading = document.getElementById('objectives-loading');
     const btn = event.target;
+    const originalText = btn.innerHTML;
+    
+    // Afficher l'indicateur de chargement
     loading.classList.remove('hidden');
     btn.disabled = true;
+    btn.classList.add('processing');
+    btn.innerHTML = '<span class="loading-spinner"></span> <span class="loading-text">Traitement en cours...</span>';
+    
+    // Afficher l'overlay de chargement
+    showLoadingOverlay('Traitement de vos objectifs par l\'IA', `Analyse de ${objectives.length} objectif(s) en cours...`);
     
     try {
         const response = await fetch('/api/process-objectives', {
@@ -74,8 +119,11 @@ async function processObjectives() {
     } catch (error) {
         alert('Erreur lors du traitement des objectifs: ' + error.message);
     } finally {
+        hideLoadingOverlay();
         loading.classList.add('hidden');
         btn.disabled = false;
+        btn.classList.remove('processing');
+        btn.innerHTML = originalText;
     }
 }
 
@@ -186,8 +234,16 @@ async function processIKIGAI() {
     
     const loading = document.getElementById('ikigai-loading');
     const btn = event.target;
+    const originalText = btn.innerHTML;
+    
+    // Afficher l'indicateur de chargement
     loading.classList.remove('hidden');
     btn.disabled = true;
+    btn.classList.add('processing');
+    btn.innerHTML = '<span class="loading-spinner"></span> <span class="loading-text">Analyse en cours...</span>';
+    
+    // Afficher l'overlay de chargement
+    showLoadingOverlay('Analyse de votre IKIGAI', 'L\'IA révèle votre raison d\'être...');
     
     try {
         const response = await fetch('/api/analyze-ikigai', {
@@ -217,8 +273,11 @@ async function processIKIGAI() {
     } catch (error) {
         alert('Erreur lors de l\'analyse IKIGAI: ' + error.message);
     } finally {
+        hideLoadingOverlay();
         loading.classList.add('hidden');
         btn.disabled = false;
+        btn.classList.remove('processing');
+        btn.innerHTML = originalText;
     }
 }
 
@@ -286,8 +345,12 @@ async function generatePDF() {
     // Désactiver le bouton et afficher le loading
     loading.classList.remove('hidden');
     pdfBtn.disabled = true;
+    pdfBtn.classList.add('processing');
     const originalContent = pdfBtn.innerHTML;
-    pdfBtn.innerHTML = '<span id="pdf-loading" class="loading"></span> Génération en cours...';
+    pdfBtn.innerHTML = '<span class="loading-spinner"></span> <span class="loading-text">Génération du PDF en cours...</span>';
+    
+    // Afficher l'overlay de chargement
+    showLoadingOverlay('Génération de votre PDF', 'Création du document professionnel...');
     
     try {
         const response = await fetch('/api/generate-pdf', {
@@ -343,13 +406,27 @@ async function generatePDF() {
         // Message de succès (optionnel, peut être retiré si trop intrusif)
         console.log('PDF généré et téléchargé avec succès !');
         
+        // Afficher un message de succès brièvement
+        const overlay = document.getElementById('loading-overlay');
+        if (overlay) {
+            const textEl = overlay.querySelector('.loading-overlay-text');
+            const subtextEl = overlay.querySelector('.loading-overlay-subtext');
+            if (textEl) textEl.textContent = 'PDF généré avec succès !';
+            if (subtextEl) subtextEl.textContent = 'Téléchargement en cours...';
+            setTimeout(hideLoadingOverlay, 1500);
+        } else {
+            hideLoadingOverlay();
+        }
+        
     } catch (error) {
         console.error('Erreur PDF:', error);
         alert('Erreur lors de la génération du PDF: ' + error.message);
+        hideLoadingOverlay();
     } finally {
         // Réactiver le bouton
         loading.classList.add('hidden');
         pdfBtn.disabled = false;
+        pdfBtn.classList.remove('processing');
         pdfBtn.innerHTML = originalContent;
     }
 }
