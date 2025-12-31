@@ -58,19 +58,19 @@ except AttributeError:
 # Note: Sur Vercel, ces messages apparaîtront dans les logs de déploiement
 if MISTRAL_API_KEY and MISTRAL_API_KEY.strip():
     key_preview = MISTRAL_API_KEY[:15] + "..." if len(MISTRAL_API_KEY) > 15 else "***"
-    print(f"✅ Configuration Mistral : Clé principale détectée (modèle: {MISTRAL_MODEL})")
+    print(f"Configuration Mistral : Clé principale détectée (modèle: {MISTRAL_MODEL})")
     print(f"   Clé principale (aperçu): {key_preview}")
     
     if MISTRAL_API_KEY_BACKUP and MISTRAL_API_KEY_BACKUP.strip():
         backup_preview = MISTRAL_API_KEY_BACKUP[:15] + "..." if len(MISTRAL_API_KEY_BACKUP) > 15 else "***"
-        print(f"✅ Configuration Mistral : Clé de secours détectée")
+        print(f"Configuration Mistral : Clé de secours détectée")
         print(f"   Clé de secours (aperçu): {backup_preview}")
     else:
-        print("⚠️ Configuration Mistral : Clé de secours non configurée")
+        print("Configuration Mistral : Clé de secours non configurée")
 else:
-    print("⚠️ Configuration Mistral : MISTRAL_API_KEY non configurée")
-    print("   → Sur Vercel : Allez dans Settings > Environment Variables et ajoutez MISTRAL_API_KEY")
-    print("   → Localement : Créez un fichier .env avec MISTRAL_API_KEY=votre_cle")
+    print("Configuration Mistral : MISTRAL_API_KEY non configurée")
+    print("   Sur Vercel : Allez dans Settings > Environment Variables et ajoutez MISTRAL_API_KEY")
+    print("   Localement : Creez un fichier .env avec MISTRAL_API_KEY=votre_cle")
 
 def call_mistral_api(prompt, api_key=None):
     """Appelle l'API Mistral pour obtenir une réponse de l'IA - Version améliorée avec gestion d'erreur et clé de secours"""
@@ -80,7 +80,7 @@ def call_mistral_api(prompt, api_key=None):
     
     # Vérifier que la clé API est configurée
     if not api_key or api_key.strip() == "":
-        print("⚠️ Clé API Mistral non configurée ou vide")
+        print("Clé API Mistral non configurée ou vide")
         return None
     
     # Vérifier que le modèle est configuré
@@ -116,44 +116,44 @@ def call_mistral_api(prompt, api_key=None):
                 content = result['choices'][0].get('message', {}).get('content', '')
                 if content and content.strip():
                     key_type = "principale" if api_key == MISTRAL_API_KEY else "secours"
-                    print(f"✅ API Mistral ({key_type}) : Réponse reçue ({len(content)} caractères)")
+                    print(f"API Mistral ({key_type}) : Réponse reçue ({len(content)} caractères)")
                     return content.strip()
-            print("⚠️ API Mistral : Réponse vide ou invalide")
+            print("API Mistral : Réponse vide ou invalide")
             return None
         
         elif response.status_code == 401:
             key_type = "principale" if api_key == MISTRAL_API_KEY else "secours"
-            print(f"❌ API Mistral ({key_type}) : Erreur 401 - Clé API invalide ou expirée")
+            print(f"API Mistral ({key_type}) : Erreur 401 - Clé API invalide ou expirée")
             return None
         
         elif response.status_code == 429:
             key_type = "principale" if api_key == MISTRAL_API_KEY else "secours"
-            print(f"⚠️ API Mistral ({key_type}) : Erreur 429 - Limite de taux dépassée")
+            print(f"API Mistral ({key_type}) : Erreur 429 - Limite de taux dépassée")
             return None
         
         elif response.status_code == 400:
             error_detail = response.text[:200] if response.text else ""
-            print(f"❌ API Mistral : Erreur 400 - Requête invalide: {error_detail}")
+            print(f"API Mistral : Erreur 400 - Requête invalide: {error_detail}")
             return None
         
         else:
             error_detail = response.text[:200] if response.text else ""
-            print(f"❌ API Mistral : Erreur {response.status_code}: {error_detail}")
+            print(f"API Mistral : Erreur {response.status_code}: {error_detail}")
             return None
         
     except requests.exceptions.Timeout:
         key_type = "principale" if api_key == MISTRAL_API_KEY else "secours"
-        print(f"❌ API Mistral ({key_type}) : Timeout - L'API prend trop de temps à répondre")
+        print(f"API Mistral ({key_type}) : Timeout - L'API prend trop de temps à répondre")
         return None
     
     except requests.exceptions.RequestException as e:
         key_type = "principale" if api_key == MISTRAL_API_KEY else "secours"
-        print(f"❌ API Mistral ({key_type}) : Erreur de connexion: {str(e)}")
+        print(f"API Mistral ({key_type}) : Erreur de connexion: {str(e)}")
         return None
     
     except Exception as e:
         key_type = "principale" if api_key == MISTRAL_API_KEY else "secours"
-        print(f"❌ API Mistral ({key_type}) : Erreur inattendue: {str(e)}")
+        print(f"API Mistral ({key_type}) : Erreur inattendue: {str(e)}")
         import traceback
         traceback.print_exc()
         return None
@@ -164,31 +164,31 @@ def call_ai_api(prompt):
     """Appelle l'API Mistral avec clé principale et clé de secours - Version améliorée"""
     # Essayer la clé principale d'abord
     if MISTRAL_API_KEY and MISTRAL_API_KEY.strip():
-        print(f"🔄 Tentative de connexion à l'API Mistral (clé principale, modèle: {MISTRAL_MODEL})...")
+        print(f"Tentative de connexion à l'API Mistral (clé principale, modèle: {MISTRAL_MODEL})...")
         result = call_mistral_api(prompt, MISTRAL_API_KEY)
         if result:
-            print("✅ API Mistral (principale) : Succès - Réponse reçue")
+            print("API Mistral (principale) : Succès - Réponse reçue")
             return result
         else:
-            print("❌ API Mistral (principale) : Échec - Tentative avec clé de secours...")
+            print("API Mistral (principale) : Échec - Tentative avec clé de secours...")
     
     # Essayer la clé de secours si la principale a échoué
     if MISTRAL_API_KEY_BACKUP and MISTRAL_API_KEY_BACKUP.strip():
-        print(f"🔄 Tentative de connexion à l'API Mistral (clé de secours, modèle: {MISTRAL_MODEL})...")
+        print(f"Tentative de connexion à l'API Mistral (clé de secours, modèle: {MISTRAL_MODEL})...")
         result = call_mistral_api(prompt, MISTRAL_API_KEY_BACKUP)
         if result:
-            print("✅ API Mistral (secours) : Succès - Réponse reçue")
+            print("API Mistral (secours) : Succès - Réponse reçue")
             return result
         else:
-            print("❌ API Mistral (secours) : Échec")
+            print("API Mistral (secours) : Échec")
     
     # Aucune clé configurée ou toutes ont échoué
     if not MISTRAL_API_KEY or not MISTRAL_API_KEY.strip():
-        print("❌ Aucune clé API Mistral configurée")
-        print("   → Sur Vercel : Allez dans Settings > Environment Variables")
-        print("   → Ajoutez MISTRAL_API_KEY et MISTRAL_API_KEY_BACKUP")
+        print("Aucune clé API Mistral configurée")
+        print("   Sur Vercel : Allez dans Settings > Environment Variables")
+        print("   Ajoutez MISTRAL_API_KEY et MISTRAL_API_KEY_BACKUP")
     else:
-        print("❌ Toutes les clés API Mistral ont échoué")
+        print("Toutes les clés API Mistral ont échoué")
     
     return None
 
@@ -257,7 +257,7 @@ Sois très concret, précis, motivant et actionnable. Utilise des exemples chiff
         
         error_msg = "L'IA n'a pas pu traiter cet objectif automatiquement."
         if not mistral_configured:
-            error_msg += " ⚠️ MISTRAL_API_KEY non configurée sur Vercel. Allez dans Settings > Environment Variables et ajoutez votre clé API Mistral pour activer l'analyse IA."
+            error_msg += " MISTRAL_API_KEY non configurée sur Vercel. Allez dans Settings > Environment Variables et ajoutez votre clé API Mistral pour activer l'analyse IA."
         else:
             error_msg += " Veuillez réessayer ou compléter manuellement les détails SMART."
         
@@ -412,19 +412,19 @@ CE POUR QUOI JE PEUX ÊTRE PAYÉ : {what_you_can_be_paid_for}
 
 Structure ta réponse de manière claire et inspirante :
 
-## 🌟 TON IKIGAI (Raison d'Être)
+## TON IKIGAI (Raison d'Être)
 
 [Identifie l'intersection unique de ces 4 éléments. Formule un IKIGAI personnalisé et inspirant en 2-3 phrases]
 
-## 💡 ANALYSE ET INSIGHTS
+## ANALYSE ET INSIGHTS
 
 [Analyse les connexions entre ces 4 éléments. Qu'est-ce qui ressort ? Quelles sont les opportunités ?]
 
-## 🎯 RECOMMANDATIONS CONCRÈTES
+## RECOMMANDATIONS CONCRÈTES
 
 [3-5 recommandations actionnables pour vivre son IKIGAI au quotidien]
 
-## 🚀 PISTES D'ACTION POUR 2026
+## PISTES D'ACTION POUR 2026
 
 [3-5 actions concrètes à entreprendre en 2026 pour aligner sa vie avec son IKIGAI]
 
@@ -439,25 +439,25 @@ Sois inspirant, concret, motivant et actionnable. Utilise un ton positif et enco
         
         config_note = ""
         if not mistral_configured:
-            config_note = "\n\n⚠️ **IMPORTANT** : MISTRAL_API_KEY non configurée sur Vercel. Allez dans Settings > Environment Variables et ajoutez votre clé API Mistral pour activer l'analyse IA."
+            config_note = "\n\n**IMPORTANT** : MISTRAL_API_KEY non configurée sur Vercel. Allez dans Settings > Environment Variables et ajoutez votre clé API Mistral pour activer l'analyse IA."
         
         # Générer une analyse basique structurée
-        return f"""## 🌟 TON IKIGAI (Raison d'Être)
+        return f"""## TON IKIGAI (Raison d'Être)
 
 L'intersection de ce que tu aimes ({what_you_love[:100] if what_you_love else 'tes passions'}...), ce en quoi tu es doué ({what_you_are_good_at[:100] if what_you_are_good_at else 'tes compétences'}...), ce dont le monde a besoin ({what_world_needs[:100] if what_world_needs else 'les besoins du monde'}...), et ce pour quoi tu peux être payé ({what_you_can_be_paid_for[:100] if what_you_can_be_paid_for else 'tes services'}...) révèle ton IKIGAI unique.
 
-## 💡 ANALYSE ET INSIGHTS
+## ANALYSE ET INSIGHTS
 
 Ces quatre éléments se complètent et révèlent des opportunités intéressantes. Il est important de trouver l'équilibre entre passion, compétence, impact et rémunération.
 
-## 🎯 RECOMMANDATIONS CONCRÈTES
+## RECOMMANDATIONS CONCRÈTES
 
 1. Explore les intersections entre tes passions et tes compétences
 2. Identifie les besoins du marché qui correspondent à tes talents
 3. Développe des compétences complémentaires pour renforcer ton IKIGAI
 4. Crée des opportunités qui allient passion et rémunération
 
-## 🚀 PISTES D'ACTION POUR 2026
+## PISTES D'ACTION POUR 2026
 
 1. Définir des objectifs SMART alignés avec ton IKIGAI pour 2026
 2. Chercher des opportunités en 2026 qui combinent tes 4 éléments
@@ -621,7 +621,7 @@ def create_pdf(objectives_list, ikigai_data, filename='objectifs_annee.pdf'):
     if objectives_list and len(objectives_list) > 0:
         # En-tête de section avec nombre d'objectifs
         total_obj = len(objectives_list)
-        section_title = f"🎯 Mes Objectifs SMART ({total_obj} objectif{'s' if total_obj > 1 else ''} traité{'s' if total_obj > 1 else ''} individuellement)"
+        section_title = f"Mes Objectifs SMART ({total_obj} objectif{'s' if total_obj > 1 else ''} traité{'s' if total_obj > 1 else ''} individuellement)"
         story.append(Paragraph(section_title, heading_style))
         story.append(Spacer(1, 0.3*inch))
         
@@ -743,7 +743,7 @@ def create_pdf(objectives_list, ikigai_data, filename='objectifs_annee.pdf'):
                 analysis_text = analysis_text.replace('\n', '<br/>')
                 
                 # Boîte pour l'analyse avec fond coloré - Analyse SPÉCIFIQUE de cet objectif
-                analysis_title = f"<b>💡 Analyse Spécifique de l'Objectif #{obj_id}:</b>"
+                analysis_title = f"<b>Analyse Spécifique de l'Objectif #{obj_id}:</b>"
                 full_analysis = f"{analysis_title}<br/><br/>{analysis_text}"
                 analysis_box_data = [[Paragraph(full_analysis, ParagraphStyle(
                     'AnalysisText', parent=styles['Normal'], fontSize=10, 
@@ -781,7 +781,7 @@ def create_pdf(objectives_list, ikigai_data, filename='objectifs_annee.pdf'):
     
     # Section IKIGAI - Style amélioré
     if ikigai_data and (ikigai_data.get('what_you_love') or ikigai_data.get('what_you_are_good_at')):
-        story.append(Paragraph("🌸 Mon IKIGAI", heading_style))
+        story.append(Paragraph("Mon IKIGAI", heading_style))
         story.append(Spacer(1, 0.2*inch))
         
         # Tableau IKIGAI amélioré - utiliser Paragraph pour gérer les retours à la ligne
@@ -836,7 +836,7 @@ def create_pdf(objectives_list, ikigai_data, filename='objectifs_annee.pdf'):
             # Remplacer les retours à la ligne par <br/>
             analysis_text = analysis_text.replace('\n', '<br/>')
             
-            story.append(Paragraph("<b>💡 Analyse IKIGAI:</b>", ParagraphStyle(
+            story.append(Paragraph("<b>Analyse IKIGAI:</b>", ParagraphStyle(
                 'IKIGAITitle', parent=styles['Heading4'], fontSize=11, 
                 textColor=colors.HexColor('#2c3e50'), spaceAfter=5, fontName='Helvetica-Bold')))
             

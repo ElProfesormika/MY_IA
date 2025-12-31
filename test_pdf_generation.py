@@ -30,30 +30,33 @@ test_ikigai = {
     "analysis": "Votre IKIGAI est clair : créer des sites web pour mettre en lumière des personnes."
 }
 
-print("🧪 Test de génération PDF...\n")
+print("Test de génération PDF...\n")
 
 try:
     pdf_buffer = create_pdf(test_objectives, test_ikigai)
     
     if pdf_buffer:
         size = len(pdf_buffer.getvalue())
-        print(f"✅ PDF généré avec succès !")
-        print(f"📊 Taille du PDF: {size} bytes")
+        print(f"PDF généré avec succès !")
+        print(f"Taille du PDF: {size} bytes")
         
         if size > 0:
-            print("✅ Le PDF contient des données")
+            print("Le PDF contient des données")
             
             # Sauvegarder pour test
             with open('test_output.pdf', 'wb') as f:
                 f.write(pdf_buffer.getvalue())
-            print("✅ PDF sauvegardé dans test_output.pdf")
+            print("PDF sauvegardé dans test_output.pdf")
         else:
-            print("❌ Le PDF est vide")
+            print("Le PDF est vide")
     else:
-        print("❌ Le buffer PDF est None")
+        print("Le buffer PDF est None")
         
 except Exception as e:
-    print(f"❌ ERREUR lors de la génération: {e}")
+    print(f"ERREUR lors de la génération: {e}")
     import traceback
     traceback.print_exc()
+
+
+
 

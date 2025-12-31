@@ -12,30 +12,30 @@ Ce projet est configuré pour être déployé sur Vercel.
 
 ## Variables d'environnement à configurer sur Vercel
 
-📖 **Guide détaillé** : Consultez [GUIDE_CONFIGURATION_VERCEL.md](./GUIDE_CONFIGURATION_VERCEL.md) pour un guide pas à pas avec captures d'écran.
+**Guide détaillé** : Consultez [GUIDE_CONFIGURATION_VERCEL.md](./GUIDE_CONFIGURATION_VERCEL.md) pour un guide pas à pas avec captures d'écran.
 
-### 🔑 Configuration Rapide :
+### Configuration Rapide :
 
 Dans les paramètres de votre projet Vercel (Settings > Environment Variables), ajoutez ces variables :
 
 #### 1. Clé API Mistral Principale (Obligatoire)
 - **Nom** : `MISTRAL_API_KEY`
 - **Valeur** : `jqm2diYfGA7sGqedt6Jj4e0uVWnheEAC`
-- **Environnements** : ✅ Production, ✅ Preview, ✅ Development
+- **Environnements** : Production, Preview, Development
 
 #### 2. Clé API Mistral de Secours (Recommandé)
 - **Nom** : `MISTRAL_API_KEY_BACKUP`
 - **Valeur** : `u7JENkl50uqSrsZm8UZ432zDiWdkwbPT`
-- **Environnements** : ✅ Production, ✅ Preview, ✅ Development
-- ⚠️ **Important** : Utilisée automatiquement si la clé principale échoue
+- **Environnements** : Production, Preview, Development
+- **Important** : Utilisée automatiquement si la clé principale échoue
 
 #### 3. Modèle Mistral (Optionnel)
 - **Nom** : `MISTRAL_MODEL`
 - **Valeur** : `mistral-small-latest`
-- **Environnements** : ✅ Production, ✅ Preview, ✅ Development
+- **Environnements** : Production, Preview, Development
 - **Par défaut** : `mistral-small-latest` si non défini
 
-### 📝 Étapes Détaillées :
+### Étapes Détaillées :
 
 1. Allez sur https://vercel.com et connectez-vous
 2. Sélectionnez votre projet
@@ -43,7 +43,7 @@ Dans les paramètres de votre projet Vercel (Settings > Environment Variables), 
 4. Cliquez sur **Add New** pour chaque variable
 5. Redéployez l'application (les variables ne sont chargées qu'au déploiement)
 
-👉 **Voir le guide complet** : [GUIDE_CONFIGURATION_VERCEL.md](./GUIDE_CONFIGURATION_VERCEL.md)
+**Voir le guide complet** : [GUIDE_CONFIGURATION_VERCEL.md](./GUIDE_CONFIGURATION_VERCEL.md)
 
 ## Déploiement
 
@@ -68,14 +68,14 @@ Dans les paramètres de votre projet Vercel (Settings > Environment Variables), 
 
 ## Notes
 
-- ✅ **API Mistral uniquement** : L'application utilise exclusivement l'API Mistral (plus de Hugging Face)
-- ✅ **Double clé API** : Système de fallback automatique entre clé principale et clé de secours
-- ✅ **Cache désactivé** : Le cache est désactivé sur toutes les réponses pour garantir des données à jour
-- ✅ **Traitement parallèle** : Les objectifs sont traités en parallèle (max 3 threads) pour plus de rapidité
-- ✅ **Timeout optimisé** : Timeout API à 8 secondes pour compatibilité avec Vercel gratuit (limite 10s)
-- ✅ **Logs détaillés** : Les logs Vercel affichent quelle clé API est utilisée et les erreurs éventuelles
+- **API Mistral uniquement** : L'application utilise exclusivement l'API Mistral (plus de Hugging Face)
+- **Double clé API** : Système de fallback automatique entre clé principale et clé de secours
+- **Cache désactivé** : Le cache est désactivé sur toutes les réponses pour garantir des données à jour
+- **Traitement parallèle** : Les objectifs sont traités en parallèle (max 3 threads) pour plus de rapidité
+- **Timeout optimisé** : Timeout API à 8 secondes pour compatibilité avec Vercel gratuit (limite 10s)
+- **Logs détaillés** : Les logs Vercel affichent quelle clé API est utilisée et les erreurs éventuelles
 
-## 🔧 Dépannage - Erreur 500 sur Vercel
+## Dépannage - Erreur 500 sur Vercel
 
 ### Problème : "This Serverless Function has crashed" / 500: INTERNAL_SERVER_ERROR
 
@@ -87,7 +87,7 @@ Dans les paramètres de votre projet Vercel (Settings > Environment Variables), 
      - `MISTRAL_API_KEY` (obligatoire) - Votre clé API Mistral principale
      - `MISTRAL_API_KEY_BACKUP` (recommandé) - Votre clé API Mistral de secours
      - `MISTRAL_MODEL` (optionnel, défaut: `mistral-small-latest`)
-   - ⚠️ **Important** : Les deux clés API Mistral sont recommandées pour la redondance
+   - **Important** : Les deux clés API Mistral sont recommandées pour la redondance
 
 2. **Vérifier les logs de déploiement** :
    - Allez dans Deployments > Cliquez sur le dernier déploiement

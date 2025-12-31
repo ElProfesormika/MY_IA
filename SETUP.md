@@ -1,6 +1,6 @@
 # Configuration et Déploiement
 
-## 🔐 Configuration des Clés API
+## Configuration des Clés API
 
 ### Étape 1 : Créer le fichier .env
 
@@ -38,7 +38,7 @@ HUGGINGFACE_API_URL=https://router.huggingface.co/models/google/flan-t5-base
 2. Créez un nouveau token (type: Read)
 3. Copiez le token dans votre fichier `.env`
 
-## 🚀 Déploiement sur Vercel
+## Déploiement sur Vercel
 
 ### Variables d'environnement sur Vercel
 
@@ -49,7 +49,7 @@ Dans les paramètres de votre projet Vercel, ajoutez ces variables d'environneme
 3. **HUGGINGFACE_API_KEY** : Votre clé API Hugging Face (optionnel)
 4. **HUGGINGFACE_API_URL** : URL de l'API Hugging Face (optionnel)
 
-## 📝 Push vers GitHub
+## Push vers GitHub
 
 Les secrets ont été retirés du code. Pour pousser vers GitHub :
 
@@ -65,4 +65,7 @@ Si GitHub demande des identifiants, utilisez un token d'accès personnel :
 1. Allez sur https://github.com/settings/tokens
 2. Créez un nouveau token (classic) avec les permissions `repo`
 3. Utilisez ce token comme mot de passe lors du push
+
+
+
 

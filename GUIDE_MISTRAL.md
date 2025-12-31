@@ -1,10 +1,10 @@
-# 🚀 Guide pour Utiliser l'IA avec Mistral
+# Guide pour Utiliser l'IA avec Mistral
 
-## ✅ Solution Recommandée : API Mistral
+## Solution Recommandée : API Mistral
 
 L'API Mistral est **gratuite** (avec un quota généreux) et fonctionne **parfaitement en français** !
 
-## 📝 Étapes pour Activer l'IA
+## Étapes pour Activer l'IA
 
 ### Étape 1 : Obtenir votre Clé API Mistral
 
@@ -53,22 +53,22 @@ python3 app.py
 
 Puis ouvrez http://localhost:5000 dans votre navigateur.
 
-## 🎯 Comment ça Fonctionne
+## Comment ça Fonctionne
 
 L'application utilise maintenant **Mistral en priorité** :
-- ✅ Si vous avez configuré Mistral → utilise Mistral
-- ✅ Si Mistral ne fonctionne pas → essaie Hugging Face automatiquement
-- ✅ Si aucune API ne fonctionne → message d'erreur clair
+- Si vous avez configuré Mistral → utilise Mistral
+- Si Mistral ne fonctionne pas → essaie Hugging Face automatiquement
+- Si aucune API ne fonctionne → message d'erreur clair
 
-## 💡 Avantages de Mistral
+## Avantages de Mistral
 
-- ✅ **Gratuit** jusqu'à un quota généreux
-- ✅ **Excellent en français**
-- ✅ **Rapide et fiable**
-- ✅ **Facile à configurer**
-- ✅ **Modèles de qualité**
+- **Gratuit** jusqu'à un quota généreux
+- **Excellent en français**
+- **Rapide et fiable**
+- **Facile à configurer**
+- **Modèles de qualité**
 
-## 🔧 Modèles Disponibles
+## Modèles Disponibles
 
 Dans `config.py`, vous pouvez changer le modèle :
 
@@ -94,7 +94,10 @@ pip install -r requirements.txt
 ### "Quota dépassé"
 **Solution** : Attendez quelques heures ou passez à un compte payant
 
-## 🎉 C'est Prêt !
+## C'est Prêt !
 
 Une fois votre clé API Mistral configurée, l'IA fonctionnera automatiquement dans votre application !
+
+
+
 

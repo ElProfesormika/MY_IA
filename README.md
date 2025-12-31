@@ -1,15 +1,15 @@
-# 🎯 Assistant IA pour la Définition d'Objectifs SMART & IKIGAI
+# Assistant IA pour la Définition d'Objectifs SMART & IKIGAI
 
 Une application web intelligente qui vous aide à définir vos objectifs de l'année en utilisant les méthodes **SMART** et **IKIGAI**, avec l'aide de l'IA via l'API Hugging Face.
 
-## ✨ Fonctionnalités
+## Fonctionnalités
 
 - **Objectifs SMART** : Définissez des objectifs Spécifiques, Mesurables, Atteignables, Pertinents et Temporels
 - **IKIGAI** : Découvrez votre raison d'être en analysant vos passions, compétences, besoins du monde et valeur monétisable
 - **Analyse IA** : Obtenez des recommandations personnalisées grâce à l'IA Hugging Face
 - **Génération PDF** : Exportez vos objectifs et analyses dans un document PDF professionnel
 
-## 🚀 Installation
+## Installation
 
 1. **Installer les dépendances** :
 ```bash
@@ -26,7 +26,7 @@ python app.py
 http://localhost:5000
 ```
 
-## 📋 Utilisation
+## Utilisation
 
 1. **Définir un objectif SMART** :
    - Remplissez tous les champs de la section SMART
@@ -40,14 +40,14 @@ http://localhost:5000
    - Après avoir rempli au moins une section et obtenu une analyse
    - Cliquez sur "Générer le PDF" pour télécharger votre document
 
-## 🛠️ Technologies Utilisées
+## Technologies Utilisées
 
 - **Backend** : Flask (Python)
 - **IA** : Hugging Face API (Mistral-7B-Instruct)
 - **PDF** : ReportLab
 - **Frontend** : HTML5, CSS3, JavaScript (Vanilla)
 
-## 📝 Structure du Projet
+## Structure du Projet
 
 ```
 MY_AI/
@@ -64,7 +64,7 @@ MY_AI/
 └── README.md             # Documentation
 ```
 
-## 🎨 Interface
+## Interface
 
 L'application dispose d'une interface moderne et intuitive avec :
 - Design responsive (mobile-friendly)
@@ -72,7 +72,7 @@ L'application dispose d'une interface moderne et intuitive avec :
 - Couleurs dégradées modernes
 - Expérience utilisateur optimisée
 
-## 📄 Format PDF
+## Format PDF
 
 Le PDF généré contient :
 - Vos objectifs SMART détaillés avec analyse IA
@@ -80,15 +80,18 @@ Le PDF généré contient :
 - Mise en page professionnelle
 - Date de génération
 
-## ⚙️ Configuration
+## Configuration
 
 La clé API Hugging Face est configurée dans `config.py`. Pour utiliser une autre clé, modifiez le fichier `config.py`.
 
-## 📌 Notes
+## Notes
 
 - L'API Hugging Face peut prendre quelques secondes pour répondre
 - Assurez-vous d'avoir une connexion internet active
 - Le PDF est généré dynamiquement avec toutes vos données
 
-## 🎉 Bonne définition d'objectifs !
+## Bonne définition d'objectifs !
+
+
+
 

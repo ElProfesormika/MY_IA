@@ -19,7 +19,7 @@ except (ImportError, Exception):
     pass
 
 # ============================================
-# 🔑 API MISTRAL (PRINCIPALE ET SECOURS)
+# API MISTRAL (PRINCIPALE ET SECOURS)
 # ============================================
 # Pour obtenir vos clés API Mistral :
 # 1. Allez sur https://console.mistral.ai/

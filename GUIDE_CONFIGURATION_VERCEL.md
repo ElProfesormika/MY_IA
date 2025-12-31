@@ -1,12 +1,12 @@
-# 🔧 Guide de Configuration des Variables d'Environnement sur Vercel
+# Guide de Configuration des Variables d'Environnement sur Vercel
 
-## 📋 Configuration des Clés API Mistral
+## Configuration des Clés API Mistral
 
 Ce guide vous explique comment configurer les clés API Mistral sur Vercel pour que votre application fonctionne correctement.
 
 ---
 
-## 🚀 Étapes de Configuration
+## Étapes de Configuration
 
 ### Étape 1 : Accéder aux Paramètres du Projet
 
@@ -22,9 +22,9 @@ Ce guide vous explique comment configurer les clés API Mistral sur Vercel pour 
    - **Name** (Nom) : `MISTRAL_API_KEY`
    - **Value** (Valeur) : `jqm2diYfGA7sGqedt6Jj4e0uVWnheEAC`
    - **Environment** : Cochez toutes les cases :
-     - ✅ Production
-     - ✅ Preview
-     - ✅ Development
+     - Production
+     - Preview
+     - Development
 3. Cliquez sur **Save** (Enregistrer)
 
 ### Étape 3 : Ajouter la Clé API Mistral de Secours (Recommandé)
@@ -34,9 +34,9 @@ Ce guide vous explique comment configurer les clés API Mistral sur Vercel pour 
    - **Name** (Nom) : `MISTRAL_API_KEY_BACKUP`
    - **Value** (Valeur) : `u7JENkl50uqSrsZm8UZ432zDiWdkwbPT`
    - **Environment** : Cochez toutes les cases :
-     - ✅ Production
-     - ✅ Preview
-     - ✅ Development
+     - Production
+     - Preview
+     - Development
 3. Cliquez sur **Save** (Enregistrer)
 
 ### Étape 4 : Ajouter le Modèle Mistral (Optionnel)
@@ -44,27 +44,27 @@ Ce guide vous explique comment configurer les clés API Mistral sur Vercel pour 
 1. Cliquez sur **Add New** (Ajouter nouveau)
 2. Remplissez les champs :
    - **Name** (Nom) : `MISTRAL_MODEL`
-   - **Value** (Valeur) : `mistral-small-latest`
+   - **Value** (Valeur) : `mistrlatestal-small`
    - **Environment** : Cochez toutes les cases :
-     - ✅ Production
-     - ✅ Preview
-     - ✅ Development
+     - Production
+     - Preview
+     - Development
 3. Cliquez sur **Save** (Enregistrer)
 
 > **Note** : Si vous ne définissez pas `MISTRAL_MODEL`, l'application utilisera `mistral-small-latest` par défaut.
 
 ---
 
-## ✅ Vérification de la Configuration
+## Vérification de la Configuration
 
 ### Vérifier dans l'Interface Vercel
 
 Après avoir ajouté les variables, vous devriez voir dans la liste :
 
 ```
-✅ MISTRAL_API_KEY          [Production, Preview, Development]
-✅ MISTRAL_API_KEY_BACKUP   [Production, Preview, Development]
-✅ MISTRAL_MODEL            [Production, Preview, Development] (optionnel)
+MISTRAL_API_KEY          [Production, Preview, Development]
+MISTRAL_API_KEY_BACKUP   [Production, Preview, Development]
+MISTRAL_MODEL            [Production, Preview, Development] (optionnel)
 ```
 
 ### Vérifier dans les Logs de Déploiement
@@ -75,15 +75,15 @@ Après avoir ajouté les variables, vous devriez voir dans la liste :
 4. Vous devriez voir ces messages :
 
 ```
-✅ Configuration Mistral : Clé principale détectée (modèle: mistral-small-latest)
+Configuration Mistral : Clé principale détectée (modèle: mistral-small-latest)
    Clé principale (aperçu): jqm2diYfGA7sGq...
-✅ Configuration Mistral : Clé de secours détectée
+Configuration Mistral : Clé de secours détectée
    Clé de secours (aperçu): u7JENkl50uqSrsZ...
 ```
 
 ---
 
-## 🔄 Redéploiement après Configuration
+## Redéploiement après Configuration
 
 ### Option 1 : Redéploiement Automatique
 
@@ -103,7 +103,7 @@ git push
 
 ---
 
-## 🛠️ Dépannage
+## Dépannage
 
 ### Problème : Les variables ne sont pas détectées
 
@@ -135,28 +135,28 @@ git push
 
 ---
 
-## 📝 Résumé des Variables Requises
+## Résumé des Variables Requises
 
 | Variable | Obligatoire | Valeur Exemple | Description |
 |----------|-------------|----------------|-------------|
-| `MISTRAL_API_KEY` | ✅ Oui | `jqm2diYfGA7sGqedt6Jj4e0uVWnheEAC` | Clé API Mistral principale |
-| `MISTRAL_API_KEY_BACKUP` | ⭐ Recommandé | `u7JENkl50uqSrsZm8UZ432zDiWdkwbPT` | Clé API Mistral de secours |
-| `MISTRAL_MODEL` | ❌ Optionnel | `mistral-small-latest` | Modèle Mistral à utiliser |
+| `MISTRAL_API_KEY` | Oui | `jqm2diYfGA7sGqedt6Jj4e0uVWnheEAC` | Clé API Mistral principale |
+| `MISTRAL_API_KEY_BACKUP` | Recommandé | `u7JENkl50uqSrsZm8UZ432zDiWdkwbPT` | Clé API Mistral de secours |
+| `MISTRAL_MODEL` | Optionnel | `mistral-small-latest` | Modèle Mistral à utiliser |
 
 ---
 
-## 🎯 Après Configuration
+## Après Configuration
 
 Une fois les variables configurées et l'application redéployée :
 
-1. ✅ L'application utilisera automatiquement l'API Mistral
-2. ✅ Si la clé principale échoue, la clé de secours sera utilisée automatiquement
-3. ✅ Les logs Vercel afficheront quelle clé est utilisée
-4. ✅ L'analyse IA fonctionnera pour les objectifs SMART et IKIGAI
+1. L'application utilisera automatiquement l'API Mistral
+2. Si la clé principale échoue, la clé de secours sera utilisée automatiquement
+3. Les logs Vercel afficheront quelle clé est utilisée
+4. L'analyse IA fonctionnera pour les objectifs SMART et IKIGAI
 
 ---
 
-## 🔗 Liens Utiles
+## Liens Utiles
 
 - **Console Mistral** : https://console.mistral.ai/
 - **Documentation Vercel** : https://vercel.com/docs/environment-variables
@@ -164,7 +164,7 @@ Une fois les variables configurées et l'application redéployée :
 
 ---
 
-## 💡 Astuce
+## Astuce
 
 Pour tester rapidement si les variables sont bien configurées, vous pouvez créer une route de test temporaire dans `app.py` :
 
@@ -172,11 +172,14 @@ Pour tester rapidement si les variables sont bien configurées, vous pouvez cré
 @app.route('/test-env')
 def test_env():
     return jsonify({
-        "MISTRAL_API_KEY": "✅ Configurée" if MISTRAL_API_KEY else "❌ Non configurée",
-        "MISTRAL_API_KEY_BACKUP": "✅ Configurée" if MISTRAL_API_KEY_BACKUP else "❌ Non configurée",
+        "MISTRAL_API_KEY": "Configurée" if MISTRAL_API_KEY else "Non configurée",
+        "MISTRAL_API_KEY_BACKUP": "Configurée" if MISTRAL_API_KEY_BACKUP else "Non configurée",
         "MISTRAL_MODEL": MISTRAL_MODEL
     })
 ```
 
-⚠️ **N'oubliez pas de supprimer cette route en production !**
+**N'oubliez pas de supprimer cette route en production !**
+
+
+
 

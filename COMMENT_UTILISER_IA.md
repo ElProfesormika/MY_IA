@@ -1,8 +1,8 @@
-# 🎯 Comment Utiliser l'IA dans l'Application
+# Comment Utiliser l'IA dans l'Application
 
-## 🚀 Solution Simple : API Mistral (GRATUITE)
+## Solution Simple : API Mistral (GRATUITE)
 
-### ⚡ Étapes Rapides (5 minutes)
+### Étapes Rapides (5 minutes)
 
 1. **Obtenez votre clé API Mistral** :
    - Allez sur https://console.mistral.ai/
@@ -21,13 +21,13 @@
    python3 app.py
    ```
 
-4. **C'est prêt !** 🎉
+4. **C'est prêt !**
    - Ouvrez http://localhost:5000
    - Remplissez les formulaires
    - Cliquez sur "Analyser avec l'IA"
    - L'IA fonctionnera automatiquement !
 
-## 📋 Détails
+## Détails
 
 ### Fichier à Modifier : `config.py`
 
@@ -41,22 +41,25 @@ MISTRAL_API_KEY = "votre_cle_mistral_ici"
 
 ### Comment ça Fonctionne
 
-- ✅ **Mistral en priorité** : Si configuré, utilise Mistral
-- ✅ **Hugging Face en fallback** : Si Mistral ne fonctionne pas, essaie Hugging Face
-- ✅ **Message clair** : Si aucune API ne fonctionne, vous aurez un message explicite
+- **Mistral en priorité** : Si configuré, utilise Mistral
+- **Hugging Face en fallback** : Si Mistral ne fonctionne pas, essaie Hugging Face
+- **Message clair** : Si aucune API ne fonctionne, vous aurez un message explicite
 
-## 💡 Avantages de Mistral
+## Avantages de Mistral
 
-- ✅ **100% Gratuit** (avec quota généreux)
-- ✅ **Excellent en français**
-- ✅ **Rapide et fiable**
-- ✅ **Facile à configurer**
+- **100% Gratuit** (avec quota généreux)
+- **Excellent en français**
+- **Rapide et fiable**
+- **Facile à configurer**
 
 ## ❓ Besoin d'Aide ?
 
 Consultez `GUIDE_MISTRAL.md` pour un guide détaillé.
 
-## 🎉 C'est Tout !
+## C'est Tout !
 
 Une fois votre clé configurée, l'IA fonctionnera automatiquement dans toute l'application !
+
+
+
 

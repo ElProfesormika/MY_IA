@@ -6,26 +6,86 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
     min-height: 100vh;
     padding: 20px;
     color: #333;
+    position: relative;
+    overflow-x: hidden;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
 }
 
 .container {
     max-width: 900px;
     margin: 0 auto;
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 30px;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25),
+                0 0 0 1px rgba(255, 255, 255, 0.3) inset;
     overflow: hidden;
+    position: relative;
+    z-index: 1;
+    animation: containerFloat 6s ease-in-out infinite;
+}
+
+@keyframes containerFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
 }
 
 header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    background-size: 200% 200%;
+    animation: headerGradient 8s ease infinite;
     color: white;
     padding: 40px 30px;
     text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+@keyframes headerGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .logo-container {
@@ -34,15 +94,38 @@ header {
     justify-content: center;
     gap: 20px;
     margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+    animation: logoContainerFloat 4s ease-in-out infinite;
+}
+
+@keyframes logoContainerFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
 }
 
 .logo-img {
     max-height: 80px;
     max-width: 200px;
     object-fit: contain;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 10px;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    z-index: 1;
+}
+
+.logo-img:hover {
+    transform: scale(1.05) rotate(2deg);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.3) inset,
+                0 0 30px rgba(255, 215, 0, 0.3);
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .logo-text {
@@ -54,20 +137,35 @@ header {
     margin: 0;
     font-weight: bold;
     color: #FFD700;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), 0 0 8px rgba(255, 215, 0, 0.3);
-    /* Animation plus subtile */
-    animation: subtle-shimmer 4s ease-in-out infinite;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), 
+                 0 0 10px rgba(255, 215, 0, 0.4),
+                 0 0 20px rgba(255, 215, 0, 0.2);
+    animation: brandPulse 3s ease-in-out infinite;
+    position: relative;
+    z-index: 1;
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: brandPulse 3s ease-in-out infinite, gradientText 4s ease infinite;
 }
 
-@keyframes subtle-shimmer {
+@keyframes brandPulse {
     0%, 100% {
-        opacity: 1;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), 0 0 8px rgba(255, 215, 0, 0.3);
+        transform: scale(1);
+        filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
     }
     50% {
-        opacity: 0.95;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), 0 0 12px rgba(255, 215, 0, 0.5);
+        transform: scale(1.02);
+        filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
     }
+}
+
+@keyframes gradientText {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 .brand-tagline {
@@ -87,16 +185,42 @@ header {
     font-style: italic;
     font-family: 'Helvetica', 'Arial', sans-serif;
     background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #ffffff 100%);
-    padding: 8px 20px;
-    border-radius: 8px;
+    background-size: 200% 200%;
+    animation: newYearGradient 4s ease infinite;
+    padding: 10px 25px;
+    border-radius: 20px;
     display: inline-block;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+@keyframes newYearGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.new-year:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.6) inset;
 }
 
 header h2 {
     font-size: 1.8em;
     margin: 20px 0 10px 0;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 1;
+    animation: headerTextFloat 5s ease-in-out infinite;
+}
+
+@keyframes headerTextFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-3px); }
 }
 
 .subtitle {
@@ -106,10 +230,36 @@ header h2 {
 
 footer {
     background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    background-size: 200% 200%;
+    animation: footerGradient 6s ease infinite;
     color: white;
     padding: 25px 30px;
     text-align: center;
     margin-top: 40px;
+    position: relative;
+    overflow: hidden;
+}
+
+footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+    animation: footerShine 4s ease-in-out infinite;
+}
+
+@keyframes footerGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes footerShine {
+    0%, 100% { left: -100%; }
+    50% { left: 100%; }
 }
 
 footer p {
@@ -122,12 +272,30 @@ footer a {
     text-decoration: none;
     font-weight: 600;
     border-bottom: 2px solid rgba(255, 255, 255, 0.5);
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    display: inline-block;
+}
+
+footer a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transition: width 0.3s ease;
 }
 
 footer a:hover {
     color: #667eea;
-    border-bottom-color: #667eea;
+    transform: translateY(-2px);
+    text-shadow: 0 2px 10px rgba(102, 126, 234, 0.5);
+}
+
+footer a:hover::after {
+    width: 100%;
 }
 
 /* Étapes du processus */
@@ -155,6 +323,8 @@ footer a:hover {
     height: 50px;
     border-radius: 50%;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-size: 200% 200%;
+    animation: stepNumberGradient 3s ease infinite;
     color: white;
     display: flex;
     align-items: center;
@@ -162,38 +332,146 @@ footer a:hover {
     font-size: 1.8em;
     font-weight: bold;
     flex-shrink: 0;
-    box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4),
+                0 0 0 3px rgba(255, 255, 255, 0.1) inset;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    position: relative;
+    overflow: hidden;
+}
+
+.step-number::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+    animation: stepNumberShine 2s ease-in-out infinite;
+}
+
+@keyframes stepNumberGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes stepNumberShine {
+    0%, 100% { transform: translate(-50%, -50%) rotate(0deg); opacity: 0; }
+    50% { transform: translate(-50%, -50%) rotate(180deg); opacity: 1; }
+}
+
+.step-number:hover {
+    transform: scale(1.15) rotate(5deg);
+    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6),
+                0 0 0 4px rgba(255, 255, 255, 0.2) inset;
 }
 
 .objective-item {
     margin-bottom: 20px;
     padding: 20px;
-    background: #f8f9fa;
-    border-radius: 8px;
-    border-left: 4px solid #667eea;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 15px;
+    border-left: 5px solid #667eea;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08),
+                0 0 0 1px rgba(102, 126, 234, 0.1) inset;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+.objective-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.objective-item:hover::before {
+    left: 100%;
+}
+
+.objective-item:hover {
+    transform: translateX(5px) translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2),
+                0 0 0 1px rgba(102, 126, 234, 0.2) inset;
+    border-left-width: 6px;
 }
 
 .btn-secondary {
-    background: #6c757d;
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
     color: white;
     margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+}
+
+.btn-secondary::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.5s, height 0.5s;
+}
+
+.btn-secondary:hover::before {
+    width: 300px;
+    height: 300px;
 }
 
 .btn-secondary:hover {
-    background: #5a6268;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(108, 117, 125, 0.3);
+    background: linear-gradient(135deg, #5a6268 0%, #495057 100%);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(108, 117, 125, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
 }
 
 /* Résumé des objectifs */
 .objectives-summary {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-size: 200% 200%;
+    animation: summaryGradient 4s ease infinite;
     color: white;
-    padding: 15px;
-    border-radius: 10px;
+    padding: 18px;
+    border-radius: 15px;
     margin-bottom: 25px;
     text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    position: relative;
+    overflow: hidden;
+}
+
+.objectives-summary::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+    animation: summaryShine 3s ease-in-out infinite;
+}
+
+@keyframes summaryGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes summaryShine {
+    0%, 100% { transform: translate(-50%, -50%) rotate(0deg); opacity: 0; }
+    50% { transform: translate(-50%, -50%) rotate(180deg); opacity: 1; }
 }
 
 .objectives-summary .summary-text {
@@ -203,15 +481,24 @@ footer a:hover {
 
 .smart-objective-card {
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    border-radius: 12px;
-    padding: 20px;
+    border-radius: 20px;
+    padding: 25px;
     margin-bottom: 30px;
     border-left: 6px solid #667eea;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12),
+                0 0 0 1px rgba(102, 126, 234, 0.1) inset;
     position: relative;
     max-height: 600px;
     overflow-y: auto;
     overflow-x: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.smart-objective-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2),
+                0 0 0 1px rgba(102, 126, 234, 0.15) inset;
+    border-left-width: 8px;
 }
 
 /* Séparateur entre objectifs */
@@ -295,17 +582,37 @@ footer a:hover {
 
 .smart-item {
     margin-bottom: 15px;
-    padding: 12px;
+    padding: 15px;
     background: white;
-    border-radius: 8px;
-    border-left: 3px solid #667eea;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s, box-shadow 0.2s;
+    border-radius: 12px;
+    border-left: 4px solid #667eea;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08),
+                0 0 0 1px rgba(102, 126, 234, 0.05) inset;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+.smart-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, rgba(102, 126, 234, 0.1), transparent);
+    transition: width 0.3s ease;
+}
+
+.smart-item:hover::before {
+    width: 100%;
 }
 
 .smart-item:hover {
-    transform: translateX(3px);
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    transform: translateX(8px) translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.15),
+                0 0 0 1px rgba(102, 126, 234, 0.1) inset;
+    border-left-width: 5px;
 }
 
 .smart-item:last-child {
@@ -323,14 +630,30 @@ footer a:hover {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-size: 200% 200%;
+    animation: letterGradient 3s ease infinite;
     color: white;
     border-radius: 50%;
     font-weight: bold;
     font-size: 0.9em;
-    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4),
+                0 0 0 2px rgba(255, 255, 255, 0.2) inset;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes letterGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.smart-letter:hover {
+    transform: scale(1.2) rotate(360deg);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6),
+                0 0 0 3px rgba(255, 255, 255, 0.3) inset;
 }
 
 .smart-item strong {
@@ -469,12 +792,16 @@ footer a:hover {
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateY(20px) scale(0.95);
     }
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
     }
+}
+
+.step {
+    animation: fadeIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .form-section h2 {
@@ -505,16 +832,17 @@ footer a:hover {
 .form-group input,
 .form-group textarea {
     width: 100%;
-    padding: 12px 15px;
+    padding: 14px 18px;
     border: 2px solid #e9ecef;
-    border-radius: 8px;
+    border-radius: 12px;
     font-size: 1em;
     font-family: inherit;
-    transition: all 0.3s ease;
-    background: #f8f9fa;
-    -webkit-appearance: none; /* Supprime le style par défaut iOS */
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    -webkit-appearance: none;
     appearance: none;
-    resize: vertical; /* Permet le redimensionnement vertical uniquement */
+    resize: vertical;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) inset;
 }
 
 .form-group input:focus,
@@ -522,7 +850,10 @@ footer a:hover {
     outline: none;
     border-color: #667eea;
     background: white;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15),
+                0 4px 15px rgba(102, 126, 234, 0.1),
+                0 2px 8px rgba(0, 0, 0, 0.05) inset;
+    transform: translateY(-2px);
 }
 
 .form-group small {
@@ -547,26 +878,86 @@ footer a:hover {
 
 .btn-primary {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-size: 200% 200%;
+    animation: buttonGradient 3s ease infinite;
     color: white;
     width: 100%;
     justify-content: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-primary:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+@keyframes buttonGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
 }
 
 .btn-success {
     background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    background-size: 200% 200%;
+    animation: successButtonGradient 3s ease infinite;
     color: white;
     width: 100%;
     justify-content: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(17, 153, 142, 0.4);
+}
+
+.btn-success::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-success:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+@keyframes successButtonGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 .btn-success:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(17, 153, 142, 0.3);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(17, 153, 142, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
 }
 
 .btn:disabled {

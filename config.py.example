@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # ============================================
-# 🔑 API MISTRAL (RECOMMANDÉ - GRATUITE)
+# API MISTRAL (RECOMMANDÉ - GRATUITE)
 # ============================================
 # Pour obtenir votre clé API Mistral :
 # 1. Allez sur https://console.mistral.ai/
@@ -28,7 +28,7 @@ MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY", "")  # Lire depuis variable d'env
 MISTRAL_MODEL = os.getenv("MISTRAL_MODEL", "mistral-small-latest")  # ou "mistral-tiny-latest" pour plus rapide
 
 # ============================================
-# 🔑 API HUGGING FACE (ALTERNATIVE)
+# API HUGGING FACE (ALTERNATIVE)
 # ============================================
 # Pour obtenir votre clé API Hugging Face :
 # 1. Allez sur https://huggingface.co/settings/tokens
@@ -37,11 +37,14 @@ MISTRAL_MODEL = os.getenv("MISTRAL_MODEL", "mistral-small-latest")  # ou "mistra
 
 HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY", "")
 
-# 🔗 URL DE L'API HUGGING FACE (si vous utilisez Hugging Face)
+# URL DE L'API HUGGING FACE (si vous utilisez Hugging Face)
 HUGGINGFACE_API_URL = os.getenv("HUGGINGFACE_API_URL", "https://router.huggingface.co/models/google/flan-t5-base")
 
 # Alternatives si le modèle ci-dessus ne fonctionne pas (décommentez celle qui fonctionne) :
 # HUGGINGFACE_API_URL = "https://router.huggingface.co/models/google/flan-t5-base"
 # HUGGINGFACE_API_URL = "https://api-inference.huggingface.co/models/google/flan-t5-large"
 # HUGGINGFACE_API_URL = "https://router.huggingface.co/models/mistralai/Devstral-Small-2-24B-Instruct-2512"
+
+
+
 

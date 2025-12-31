@@ -89,7 +89,7 @@ function displaySMARTObjectives() {
     }
     
     let html = `<div class="objectives-summary">
-        <p class="summary-text">✅ <strong>${allObjectives.length}</strong> objectif(s) traité(s) individuellement par l'IA</p>
+        <p class="summary-text"><strong>${allObjectives.length}</strong> objectif(s) traité(s) individuellement par l'IA</p>
     </div>`;
     
     // Afficher chaque objectif avec un traitement spécifique et une séparation claire
@@ -150,7 +150,7 @@ function displaySMARTObjectives() {
                     
                     ${obj.analysis ? `
                     <div class="smart-analysis">
-                        <strong>💡 Analyse spécifique de cet objectif:</strong>
+                        <strong>Analyse spécifique de cet objectif:</strong>
                         <p>${obj.analysis}</p>
                     </div>
                     ` : ''}
@@ -287,7 +287,7 @@ async function generatePDF() {
     loading.classList.remove('hidden');
     pdfBtn.disabled = true;
     const originalContent = pdfBtn.innerHTML;
-    pdfBtn.innerHTML = '<span id="pdf-loading" class="loading">⏳</span> Génération en cours...';
+    pdfBtn.innerHTML = '<span id="pdf-loading" class="loading"></span> Génération en cours...';
     
     try {
         const response = await fetch('/api/generate-pdf', {
@@ -341,7 +341,7 @@ async function generatePDF() {
         }, 100);
         
         // Message de succès (optionnel, peut être retiré si trop intrusif)
-        console.log('✅ PDF généré et téléchargé avec succès !');
+        console.log('PDF généré et téléchargé avec succès !');
         
     } catch (error) {
         console.error('Erreur PDF:', error);
